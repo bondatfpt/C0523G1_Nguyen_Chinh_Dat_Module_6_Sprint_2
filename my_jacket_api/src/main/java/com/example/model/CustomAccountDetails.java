@@ -1,18 +1,54 @@
 package com.example.model;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.example.repository.IRoleRepository;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.stereotype.Component;
 
+/**
+ * Copyright 2019 {@author Loda} (https://loda.me).
+ * This project is licensed under the MIT license.
+ *
+ * @since 4/30/2019
+ * Github: https://github.com/loda-kun
+ */
+@Data
+@Component
 public class CustomAccountDetails implements UserDetails {
+    @Autowired
+            private IRoleRepository iRoleRepository;
     Account account;
+
+    public CustomAccountDetails(Account account) {
+        this.account = account;
+    }
+
+    public CustomAccountDetails() {
+    }
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        List<Role> roles = iRoleRepository.findAll();
+
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+
+        return authorities;
     }
+
 
     @Override
     public String getPassword() {
@@ -21,7 +57,7 @@ public class CustomAccountDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return account.getUseName();
+        return account.getUsername();
     }
 
     @Override

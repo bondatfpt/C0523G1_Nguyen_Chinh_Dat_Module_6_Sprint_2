@@ -1,26 +1,29 @@
 package com.example.model;
 
-import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 public class Role {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    private Set<Account> accounts;
+    @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
+    private Set<Account> account;
 
     public Role() {
     }
 
-    public Role(Integer id, String name, Set<Account> accounts) {
+    public Role(Integer id, String name, Set<Account> account) {
         this.id = id;
         this.name = name;
-        this.accounts = accounts;
+        this.account = account;
     }
 
     public Integer getId() {
@@ -39,12 +42,12 @@ public class Role {
         this.name = name;
     }
 
-    public Set<Account> getAccounts() {
-        return accounts;
+    public Set<Account> getAccount() {
+        return account;
     }
 
-    public void setAccounts(Set<Account> accounts) {
-        this.accounts = accounts;
+    public void setAccount(Set<Account> account) {
+        this.account = account;
     }
 }
 

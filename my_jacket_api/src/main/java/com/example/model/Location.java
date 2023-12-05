@@ -1,6 +1,6 @@
 package com.example.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -12,16 +12,16 @@ public class Location {
     private String name;
 
     @OneToMany(mappedBy = "location")
-    private Set<Account> accounts;
+    private Set<User> users;
 
 
     public Location() {
     }
 
-    public Location(Integer id, String name, Set<Account> accounts) {
+    public Location(Integer id, String name, Set<User> users) {
         this.id = id;
         this.name = name;
-        this.accounts = accounts;
+        this.users = users;
     }
 
     public Integer getId() {
@@ -40,11 +40,11 @@ public class Location {
         this.name = name;
     }
 
-    public Set<Account> getAccounts() {
-        return accounts;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setAccounts(Set<Account> accounts) {
-        this.accounts = accounts;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }
