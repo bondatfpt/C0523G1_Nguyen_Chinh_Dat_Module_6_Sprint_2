@@ -1,12 +1,18 @@
-package com.example.model;
+package com.example.jwt;
 
+import com.example.model.CustomAccountDetails;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
+
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private final String JWT_SECRET = "datkaaaaaaaaa";
+    private final String JWT_SECRET = "datkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+    private Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     private final long JWT_EXPIRATION = 604800000L;
 
@@ -16,15 +22,15 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 
         return Jwts.builder()
-                .setSubject(Long.toString(customAccountDetails.account.getId()))
+                .setSubject(customAccountDetails.toString())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+                .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }
     public Integer getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(JWT_SECRET)
+                .setSigningKey(key)
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -33,7 +39,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(key).parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
             System.out.println("Invalid JWT token");

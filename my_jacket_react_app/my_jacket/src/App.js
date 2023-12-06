@@ -4,6 +4,9 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
 import {Route, Routes} from "react-router-dom";
+import { ToastContainer } from 'react-bootstrap';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function App() {
@@ -15,6 +18,7 @@ function App() {
         <Route element = {<Cart/>} path='/cart'></Route>
       </Routes>
       <Footer/>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }

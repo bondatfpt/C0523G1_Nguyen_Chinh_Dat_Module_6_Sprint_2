@@ -87,4 +87,15 @@ public class Account {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", isDeleted=" + isDeleted +
+                ", isActive=" + isActive +
+                ", roles=" + roles +
+                '}';
+    }
 }

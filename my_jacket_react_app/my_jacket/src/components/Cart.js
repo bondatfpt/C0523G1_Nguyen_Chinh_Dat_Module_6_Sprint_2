@@ -202,14 +202,13 @@ export default function Cart() {
                             <div className="form-outline form-white mb-4">
                               <input
                                 type="text"
-                                id="typeText"
                                 className="form-control form-control-lg"
                                 siez={17}
                                 placeholder="1234 5678 9012 3457"
                                 minLength={19}
                                 maxLength={19}
                               />
-                              <label className="form-label" htmlFor="typeText">
+                              <label className="form-label">
                                 Card Number
                               </label>
                             </div>

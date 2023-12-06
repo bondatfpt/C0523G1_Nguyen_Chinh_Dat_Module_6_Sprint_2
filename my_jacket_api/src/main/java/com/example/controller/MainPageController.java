@@ -2,9 +2,9 @@ package com.example.controller;
 
 import com.example.model.Account;
 import com.example.model.CustomAccountDetails;
-import com.example.model.JwtTokenProvider;
-import com.example.payload.LoginRequest;
-import com.example.payload.LoginResponse;
+import com.example.jwt.JwtTokenProvider;
+import com.example.jwt.payload.LoginRequest;
+import com.example.jwt.payload.LoginResponse;
 import com.example.repository.IAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class MainPageController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -39,15 +40,11 @@ public class MainPageController {
                         loginRequest.getPassword()
                 )
         );
-
         // Nếu không xảy ra exception tức là thông tin hợp lệ
         // Set thông tin authentication vào Security Context
         SecurityContextHolder.getContext().setAuthentication(authentication);
         System.out.println(authentication.getPrincipal());
         String jwt = tokenProvider.generateToken((CustomAccountDetails)authentication.getPrincipal());
-
-
-
         // Trả về jwt cho người dùng.
         System.out.println("JWT ne`:" + jwt);
         return new LoginResponse(jwt);

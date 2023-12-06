@@ -1,18 +1,15 @@
 package com.example.model;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.example.repository.IRoleRepository;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +24,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomAccountDetails implements UserDetails {
     @Autowired
-            private IRoleRepository iRoleRepository;
+    private IRoleRepository iRoleRepository;
+
     Account account;
 
     public CustomAccountDetails(Account account) {
@@ -40,12 +38,11 @@ public class CustomAccountDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<Role> roles = iRoleRepository.findAll();
+        Set<Role> roles = account.getRoles();
 
         List<GrantedAuthority> authorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
-
         return authorities;
     }
 
@@ -78,5 +75,12 @@ public class CustomAccountDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "CustomAccountDetails{" +
+                "account=" + account +
+                '}';
     }
 }

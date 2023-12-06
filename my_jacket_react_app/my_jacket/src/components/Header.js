@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Login from "./Login";
+import { decodeJwt } from "../service/Jwt";
 
 export default function Header() {
   const [showModal,setShowModal] = useState(false);
-
+  
   const handleShowModal = () => {
     setShowModal(true);
   }
@@ -11,6 +12,7 @@ export default function Header() {
   const handleHideModal = () => {
     setShowModal(false);
   }
+  
 
   return (
     <div>
