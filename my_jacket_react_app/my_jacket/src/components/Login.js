@@ -4,16 +4,18 @@ import { login } from "../service/LoginService";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { decodeJwt,saveJwt } from "../service/Jwt";
+import { decodeJwt, saveJwt } from "../service/Jwt";
+import { getIdFromJwt } from "../service/Jwt";
 
-export default function Login({ showModal, handleHideModal }) {
+export default function Login({ showModal, handleHideModal,setIdLogin }) {
   const navigate = useNavigate();
   const handleSubmit = async (loginRequest) => {
     const response = await login(loginRequest);
     console.log(response.data.accessToken);
     if (response.status == 200) {
       saveJwt(response.data.accessToken);
-      console.log("Decoded: "+decodeJwt(response.data.accessToken));
+      const idLogin = getIdFromJwt();
+      setIdLogin(idLogin);
       handleHideModal();
       navigate("/cart");
       toast.success("Login success");

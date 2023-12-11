@@ -46,6 +46,13 @@ public class CustomAccountDetails implements UserDetails {
         return authorities;
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
     @Override
     public String getPassword() {

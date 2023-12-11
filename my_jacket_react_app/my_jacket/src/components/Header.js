@@ -1,18 +1,44 @@
 import React, { useEffect, useState } from "react";
 import Login from "./Login";
-import { decodeJwt } from "../service/Jwt";
-
+import {
+  getUsernameFromJwt,
+  getIdFromJwt,
+  getRolesFromJwt,
+  removeJwt,
+} from "../service/Jwt";
+import { getUserByAccountId } from "../service/LoginService";
 export default function Header() {
-  const [showModal,setShowModal] = useState(false);
-  
+  const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState();
+  const [idLogin, setIdLogin] = useState("");
+
+  const fetchDataUser = async () => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      const idLogin = getIdFromJwt();
+      setIdLogin(idLogin);
+      const user = await getUserByAccountId(idLogin);
+      setUser(user);
+    }
+  };
+  const handleLogout = () => {
+    removeJwt();
+    setIdLogin("");
+  };
+  useEffect(() => {
+    fetchDataUser();
+  }, [idLogin]);
+
   const handleShowModal = () => {
     setShowModal(true);
-  }
+  };
 
   const handleHideModal = () => {
     setShowModal(false);
+  };
+  if (idLogin !== "" && !user) {
+    return null;
   }
-  
 
   return (
     <div>
@@ -26,9 +52,7 @@ export default function Header() {
                 </a>
                 <ul className="nav">
                   <li className="scroll-to-section">
-                    <a href="#top">
-                      Home
-                    </a>
+                    <a href="#top">Home</a>
                   </li>
                   <li className="scroll-to-section">
                     <a href="#men">Men</a>
@@ -39,11 +63,43 @@ export default function Header() {
                   <li className="scroll-to-section">
                     <a href="#kids">Kid</a>
                   </li>
-                  <li className="scroll-to-section">
-                    <a onClick={handleShowModal} data-toggle="modal" data-target="#loginModal">
-                      Login
-                    </a>
-                  </li>
+                  {idLogin == "" && (
+                    <li className="scroll-to-section">
+                      <a
+                        onClick={handleShowModal}
+                        data-toggle="modal"
+                        data-target="#loginModal"
+                      >
+                        Login
+                      </a>
+                    </li>
+                  )}
+
+                  {idLogin !== "" && (
+                    <li className="scroll-to-section">
+                      <a id="dropdownMenuButton1" data-bs-toggle="dropdown" >{user.name}</a>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1"
+                      >
+                        <li>
+                          <a className="dropdown-item" onClick={handleLogout}>
+                            Log out
+                          </a>
+                        </li>
+                        {/* <li>
+                          <a className="dropdown-item" href="#">
+                            Another action
+                          </a>
+                        </li>
+                        <li>
+                          <a className="dropdown-item" href="#">
+                            Something else here
+                          </a>
+                        </li> */}
+                      </ul>
+                    </li>
+                  )}
                 </ul>
                 <a className="menu-trigger">
                   <span>Menu</span>
@@ -53,7 +109,11 @@ export default function Header() {
           </div>
         </div>
       </header>
-      <Login handleHideModal = {handleHideModal} showModal = {showModal}/>
+      <Login
+        handleHideModal={handleHideModal}
+        showModal={showModal}
+        setIdLogin={setIdLogin}
+      />
     </div>
   );
 }

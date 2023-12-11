@@ -1,28 +1,40 @@
 package com.example.jwt;
 
+import com.example.model.Account;
 import com.example.model.CustomAccountDetails;
+import com.example.model.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
-    private final String JWT_SECRET = "datkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
     private Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     private final long JWT_EXPIRATION = 604800000L;
 
 
-    public  String generateToken (CustomAccountDetails customAccountDetails){
+    public String generateToken(CustomAccountDetails customAccountDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 
+        Account account = customAccountDetails.getAccount();
+        List<String> roles = account.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toList());
+
+        Claims claims = Jwts.claims().setSubject(Integer.toString(account.getId()));
+        claims.put("username", account.getUsername());
+        claims.put("roles", roles);
+
         return Jwts.builder()
-                .setSubject(customAccountDetails.toString())
+                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, key)
