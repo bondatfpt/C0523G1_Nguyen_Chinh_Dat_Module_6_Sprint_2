@@ -1,0 +1,103 @@
+package com.example.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import javax.persistence.*;
+import java.util.Set;
+
+@Entity
+public class ProductDetail {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private Integer quantity;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean isDeleted;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "productDetail")
+    private Set<Image> images;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "color_id", referencedColumnName = "id")
+    private Color color;
+
+    @ManyToOne
+    @JoinColumn(name = "size_id", referencedColumnName = "id")
+    private Size size;
+
+    public ProductDetail() {
+    }
+
+    public ProductDetail(Integer id, Integer quantity, boolean isDeleted, Set<Image> images, Product product, Color color, Size size) {
+        this.id = id;
+        this.quantity = quantity;
+        this.isDeleted = isDeleted;
+        this.images = images;
+        this.product = product;
+        this.color = color;
+        this.size = size;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+
+    public Set<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(Set<Image> images) {
+        this.images = images;
+    }
+}

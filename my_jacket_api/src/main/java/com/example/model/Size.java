@@ -15,18 +15,18 @@ public class Size {
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 
-    @ManyToMany(mappedBy = "sizes")
     @JsonBackReference
-    private Set<Product> products;
+    @OneToMany(mappedBy = "size")
+    private Set<ProductDetail> productDetails;
 
     public Size() {
     }
 
-    public Size(Integer id, String name, boolean isDeleted, Set<Product> products) {
+    public Size(Integer id, String name, boolean isDeleted, Set<ProductDetail> productDetails) {
         this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
-        this.products = products;
+        this.productDetails = productDetails;
     }
 
     public Integer getId() {
@@ -53,11 +53,11 @@ public class Size {
         isDeleted = deleted;
     }
 
-    public Set<Product> getProducts() {
-        return products;
+    public Set<ProductDetail> getProductDetails() {
+        return productDetails;
     }
 
-    public void setProducts(Set<Product> products) {
-        this.products = products;
+    public void setProductDetails(Set<ProductDetail> productDetails) {
+        this.productDetails = productDetails;
     }
 }

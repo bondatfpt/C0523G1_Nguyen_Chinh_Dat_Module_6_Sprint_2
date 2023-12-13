@@ -17,16 +17,16 @@ public class Color {
     private boolean isDeleted;
     @JsonBackReference
     @OneToMany(mappedBy = "color")
-    private Set<Product> products;
+    private Set<ProductDetail> productDetails;
 
     public Color() {
     }
 
-    public Color(Integer id, String name, boolean isDeleted, Set<Product> products) {
+    public Color(Integer id, String name, boolean isDeleted, Set<ProductDetail> productDetails) {
         this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
-        this.products = products;
+        this.productDetails = productDetails;
     }
 
     public Integer getId() {
@@ -53,11 +53,11 @@ public class Color {
         isDeleted = deleted;
     }
 
-    public Set<Product> getProducts() {
-        return products;
+    public Set<ProductDetail> getProductDetails() {
+        return productDetails;
     }
 
-    public void setProducts(Set<Product> products) {
-        this.products = products;
+    public void setProductDetails(Set<ProductDetail> productDetails) {
+        this.productDetails = productDetails;
     }
 }
