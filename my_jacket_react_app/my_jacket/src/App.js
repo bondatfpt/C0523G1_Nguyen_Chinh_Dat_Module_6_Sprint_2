@@ -6,6 +6,7 @@ import HomePage from './components/HomePage';
 import {Route, Routes} from "react-router-dom";
 import { ToastContainer } from 'react-bootstrap';
 import 'react-toastify/dist/ReactToastify.css';
+import ProductDetail from './components/ProductDetail';
 
 
 
@@ -16,6 +17,8 @@ function App() {
       <Routes>
         <Route element = {<HomePage/>} path=''></Route>
         <Route element = {<Cart/>} path='/cart'></Route>
+        <Route element = {<ProductDetail/>} path='/product-detail/:id'></Route>
+
       </Routes>
       <Footer/>
       <ToastContainer></ToastContainer>

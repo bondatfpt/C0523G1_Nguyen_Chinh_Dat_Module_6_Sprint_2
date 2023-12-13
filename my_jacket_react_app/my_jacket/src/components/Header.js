@@ -7,6 +7,7 @@ import {
   removeJwt,
 } from "../service/Jwt";
 import { getUserByAccountId } from "../service/LoginService";
+import { Link } from "react-router-dom";
 export default function Header() {
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState();
@@ -52,7 +53,7 @@ export default function Header() {
                 </a>
                 <ul className="nav">
                   <li className="scroll-to-section">
-                    <a href="#top">Home</a>
+                    <Link to="/">Home</Link>
                   </li>
                   <li className="scroll-to-section">
                     <a href="#men">Men</a>

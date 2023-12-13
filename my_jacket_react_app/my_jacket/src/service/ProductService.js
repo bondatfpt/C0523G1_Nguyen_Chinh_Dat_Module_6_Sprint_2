@@ -30,6 +30,57 @@ export const getProductLatestOfMen  = async () => {
     }
 }
 
+export const getProductDetailByProductId  = async (id) => {
+    try {
+        const respone = await axios.get("http://localhost:8080/api/product/product-detail/detail/" + id);
+        console.log(respone.data);
+        return respone.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export const getProductById  = async (id) => {
+    try {
+        const respone = await axios.get("http://localhost:8080/api/product/detail/" + id);
+        console.log(respone.data);
+        return respone.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getColorOfProduct  = async (id) => {
+    try {
+        const respone = await axios.get("http://localhost:8080/api/image/product/" + id);
+        console.log(respone.data);
+        return respone.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getImagesOfColor  = async (colorId,productId) => {
+    try {
+        const respone = await axios.get(`http://localhost:8080/api/image/product/${colorId}/${productId}`);
+        console.log(respone.data);
+        return respone.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getSizeByColorIdOfProduct  = async (colorId,productId) => {
+    try {
+        const respone = await axios.get(`http://localhost:8080/api/size/color/product/${colorId}/${productId}`);
+        console.log(respone.data);
+        return respone.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const truncateString = (input) => {
     if (input.length <= 20) {
       return input;

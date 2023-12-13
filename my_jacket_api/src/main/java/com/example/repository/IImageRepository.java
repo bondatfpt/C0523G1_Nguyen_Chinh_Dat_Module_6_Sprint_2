@@ -4,6 +4,7 @@ import com.example.dto.IImageDto;
 import com.example.model.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -50,4 +51,17 @@ public interface IImageRepository extends JpaRepository<Image,Integer> {
             ") latest_products ON latest_products.id = product_detail.product_id\n" +
             "GROUP BY latest_products.id, latest_products.name,latest_products.price",nativeQuery = true)
     List<IImageDto> getProductLatestOfMen();
+
+    @Query(value = "SELECT MAX(image.path) as `path`,product_detail.color_id, color.name FROM my_jacket.image\n" +
+            "join product_detail on product_detail.id = image.product_detail_id \n" +
+            "join product on product.id = product_detail.product_id and product.id = :id  and image.is_deleted = 0\n" +
+            "join color on color.id = product_detail.color_id\n" +
+            "group by product_detail.color_id",nativeQuery = true)
+    List<IImageDto> getColorOfProduct(@Param("id") Integer id);
+
+    @Query(value = "SELECT image.path, product_detail.color_id FROM my_jacket.image\n" +
+            "join product_detail on product_detail.id = image.product_detail_id and color_id = :colorId and product_detail.is_deleted = 0\n" +
+            "join product on product.id = product_detail.product_id and product.id = :productId and product.is_deleted = 0\n" +
+            "limit 4",nativeQuery = true)
+    List<IImageDto> getImagesOfColor (@Param("colorId") Integer colorId, @Param("productId") Integer productId);
 }

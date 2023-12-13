@@ -22,7 +22,12 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public List<Product> getProductLatestOfKid() {
-        return iProductRepository.getProductLatestOfKid();
+    public Product getProductById(Integer id) {
+        return iProductRepository.getProductById(id);
+    }
+
+    @Override
+    public List<ProductDetail> findProductDetailByProductId(Integer id) {
+        return iProductDetailRepository.findProductDetailByProductId(id);
     }
 }

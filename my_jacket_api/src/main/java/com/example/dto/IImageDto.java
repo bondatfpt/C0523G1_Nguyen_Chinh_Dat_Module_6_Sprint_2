@@ -5,4 +5,5 @@ public interface IImageDto {
     Double getPrice();
     Integer getId();
     String getPath();
+    Integer getColor_id();
 }

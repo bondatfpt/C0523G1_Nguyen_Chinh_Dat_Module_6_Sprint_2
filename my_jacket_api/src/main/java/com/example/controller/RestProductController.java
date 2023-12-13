@@ -60,4 +60,23 @@ public class RestProductController {
             return new ResponseEntity<>(images, HttpStatus.OK);
         }
     }
+
+    @GetMapping("product-detail/detail/{id}")
+    public ResponseEntity<List<ProductDetail>> getProductDetailByProductId(@PathVariable Integer id) {
+        List<ProductDetail> productDetails = iProductService.findProductDetailByProductId(id);
+        if (productDetails.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(productDetails, HttpStatus.OK);
+        }
+    }
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<Product> getProductBytId(@PathVariable Integer id) {
+        Product product = iProductService.getProductById(id);
+        if (product == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
+    }
 }
