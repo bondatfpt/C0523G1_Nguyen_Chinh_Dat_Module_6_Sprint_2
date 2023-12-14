@@ -27,4 +27,44 @@ public interface IProductRepository extends JpaRepository<Product,Integer>{
             "GROUP BY products.id, products.name, products.price, products.category_id\n" +
             "ORDER BY products.date_added DESC",nativeQuery = true)
     Page<IProductDto> findAllProduct(Pageable pageable);
+
+    @Query(value = "SELECT products.id, products.name, products.price,\n" +
+            "     MAX(image.path) as `path`\n" +
+            "FROM my_jacket.image\n" +
+            "JOIN product_detail ON product_detail.id = image.product_detail_id AND image.is_deleted = 0\n" +
+            "RIGHT JOIN (\n" +
+            "     SELECT id, name, price, category_id, date_added\n" +
+            "     FROM product\n" +
+            "     WHERE is_deleted = 0\n" +
+            ") products ON products.id = product_detail.product_id AND product_detail.is_deleted = 0\n" +
+            "WHERE products.name like %:name%\n" +
+            "GROUP BY products.id, products.name, products.price, products.category_id\n" +
+            "ORDER BY products.date_added DESC",nativeQuery = true)
+    Page<IProductDto> findProductByName(Pageable pageable, @Param("name") String name);
+
+    @Query(value = "SELECT products.id, products.name, products.price, products.category_id,\n" +
+            "     MAX(image.path) as `path`\n" +
+            "FROM my_jacket.image\n" +
+            "JOIN product_detail ON product_detail.id = image.product_detail_id AND image.is_deleted = 0\n" +
+            "RIGHT JOIN (\n" +
+            "     SELECT id, name, price, category_id, date_added\n" +
+            "     FROM product\n" +
+            "     WHERE is_deleted = 0 and category_id = :id\n" +
+            ") products ON products.id = product_detail.product_id AND product_detail.is_deleted = 0\n" +
+            "GROUP BY products.id, products.name, products.price\n" +
+            "ORDER BY products.date_added DESC",nativeQuery = true)
+    Page<IProductDto> findProductByCategoryId(Pageable pageable, @Param("id") Integer id);
+
+    @Query(value = "SELECT products.id, products.name, products.price, products.category_id,\n" +
+            "     MAX(image.path) as `path`\n" +
+            "FROM my_jacket.image\n" +
+            "JOIN product_detail ON product_detail.id = image.product_detail_id AND image.is_deleted = 0\n" +
+            "RIGHT JOIN (\n" +
+            "     SELECT id, name, price, category_id, date_added\n" +
+            "     FROM product\n" +
+            "     WHERE is_deleted = 0 and category_id = :id and name like %:name%\n" +
+            ") products ON products.id = product_detail.product_id AND product_detail.is_deleted = 0\n" +
+            "GROUP BY products.id, products.name, products.price\n" +
+            "ORDER BY products.date_added DESC",nativeQuery = true)
+    Page<IProductDto> findProductByNameAndCategoryId(Pageable pageable, @Param("id") Integer id, @Param("name")String name);
 }

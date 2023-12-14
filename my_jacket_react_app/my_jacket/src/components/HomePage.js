@@ -6,9 +6,10 @@ export default function HomePage() {
   const [products, setProducts] = useState();
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState([]);
-
+  const [nameSearch, setNameSearch] = useState("3s");
+  const [categoryId, setCategoryId] = useState(2);
   const fetchData = async () => {
-    const data = await getAllProduct(page);
+    const data = await getAllProduct(page,nameSearch,categoryId);
     const totalP = totalPageArray(data.totalPages);
     setTotalPage(totalP);
     setProducts(data.content);
@@ -181,7 +182,10 @@ export default function HomePage() {
                         </li>
                       </ul>
                     </div>
-                    <img src={item.path} style={{width:"100%", height:"450px"}} />
+                    <img
+                      src={item.path}
+                      style={{ width: "100%", height: "450px" }}
+                    />
                   </div>
                   <div className="down-content">
                     <h4>{truncateString(item.name)}</h4>
@@ -210,7 +214,15 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <div style={{textAlign:"center",justifyContent:"center",alignItems:"center",display:"flex"}} className="mt-3">
+      <div
+        style={{
+          textAlign: "center",
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+        }}
+        className="mt-3"
+      >
         <nav aria-label="Page navigation example">
           <ul className="pagination justify-content-end">
             <li className="page-item">

@@ -27,14 +27,22 @@ public class RestProductController {
     private IImageService iImageService;
 
     @GetMapping("")
-    public ResponseEntity<Page<IProductDto>> findAll( @RequestParam(name = "page", defaultValue = "0", required = false) Integer page) {
-        Pageable pageable = PageRequest.of(page,6);
-        Page<IProductDto> products = iProductService.findAllProduct(pageable);
-        if (products.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(products, HttpStatus.OK);
+    public ResponseEntity<Page<IProductDto>> findAll(@RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
+                                                     @RequestParam(name = "name", required = false) String name,
+                                                     @RequestParam(name = "categoryId", required = false) Integer categoryId) {
+        Pageable pageable = PageRequest.of(page, 6);
+        if (categoryId == null && name != null) {
+            Page<IProductDto> productDtos = iProductService.findProductByName(pageable, name);
+            return new ResponseEntity<>(productDtos, HttpStatus.OK);
+        }else if (categoryId != null && name == null){
+            Page<IProductDto> productDtos = iProductService.findProductByCategoryId(pageable, categoryId);
+            return new ResponseEntity<>(productDtos, HttpStatus.OK);
+        } else if (categoryId != null && name != null) {
+            Page<IProductDto> productDtos = iProductService.findProductByNameAndCategoryId(pageable,categoryId,name);
+            return new ResponseEntity<>(productDtos, HttpStatus.OK);
         }
+        Page<IProductDto> productDtos = iProductService.findAllProduct(pageable);
+        return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
     @GetMapping("/latest-kid")
@@ -76,6 +84,7 @@ public class RestProductController {
             return new ResponseEntity<>(productDetails, HttpStatus.OK);
         }
     }
+
     @GetMapping("/detail/{id}")
     public ResponseEntity<Product> getProductBytId(@PathVariable Integer id) {
         Product product = iProductService.getProductById(id);
@@ -85,6 +94,7 @@ public class RestProductController {
             return new ResponseEntity<>(product, HttpStatus.OK);
         }
     }
+
     @GetMapping("product-detail/amount/{id}")
     public ResponseEntity<IAmountDto> getSumAmountOfProduct(@PathVariable Integer id) {
         IAmountDto iAmountDto = iProductService.getSumAmountOfProduct(id);

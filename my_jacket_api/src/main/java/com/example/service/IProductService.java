@@ -18,5 +18,8 @@ List<ProductDetail> findAll();
     IAmountDto getSumAmountOfProduct ( Integer id);
 
     Page<IProductDto> findAllProduct(Pageable pageable);
+    Page<IProductDto> findProductByName(Pageable pageable, String name);
+    Page<IProductDto> findProductByCategoryId(Pageable pageable, Integer id);
+    Page<IProductDto> findProductByNameAndCategoryId(Pageable pageable, Integer id, String name);
 
 }

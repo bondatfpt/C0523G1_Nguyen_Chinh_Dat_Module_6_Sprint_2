@@ -5,5 +5,5 @@ public interface IProductDto {
     Double getPrice();
     Integer getId();
     String getPath();
-
+    Integer getCategory_id();
 }

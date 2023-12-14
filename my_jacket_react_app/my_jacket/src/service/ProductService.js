@@ -1,8 +1,12 @@
 import axios from "axios";
 
-export const getAllProduct = async (page) => {
+export const getAllProduct = async (page, name,id) => {
+    let path = "http://localhost:8080/api/product"+ 
+    (name === undefined && id === undefined ? `?page=${page}`
+        : id === undefined && name !== undefined ? `?page=${page}&name=${name}`
+            : `?page=${page}&name=${name}&categoryId=${id}`)
     try {
-        const respone = await axios.get("http://localhost:8080/api/product?page=" + page);
+        const respone = await axios.get(path);
         console.log(respone.data);
         return respone.data;
     } catch (error) {
