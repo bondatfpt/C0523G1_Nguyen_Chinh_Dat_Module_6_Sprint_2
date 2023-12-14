@@ -11,6 +11,8 @@ import {
   getColorOfProduct,
   getImagesOfColor,
   getSizeByColorIdOfProduct,
+  getSumAmountOfProduct,
+  splitDescription
 } from "../service/ProductService";
 
 export default function ProductDetail() {
@@ -22,7 +24,7 @@ export default function ProductDetail() {
   const [imagesOfColor, setImageOfColor] = useState();
   const [colorName, setColorName] = useState();
   const [sizesOfColor, setSizesOfColor] = useState();
-  const [amount, setAmount] = useState();
+  const [sumAmount, setSumAmount] = useState();
   const [sizeName, setSizeName] = useState();
   const [isActive, setIsActive] = useState(false);
 
@@ -30,7 +32,11 @@ export default function ProductDetail() {
     const product = await getProductById(id);
     setProduct(product);
   };
-
+  const fetchDataAmountProduct = async () => {
+    const respone = await getSumAmountOfProduct(id);
+    setSumAmount(respone.amount);
+    console.log("sum amount:" + sumAmount);
+  };
   const fetchDataProductDetails = async () => {
     const productDetails = await getProductDetailByProductId(id);
     setProductDetails(productDetails);
@@ -67,6 +73,7 @@ export default function ProductDetail() {
       await fetchDataProductDetails();
       await fetchDataProduct();
       await fetchDataColorOfProducts();
+      await fetchDataAmountProduct();
       if (colorId !== undefined) {
         await fetchDataImagesOfColor();
         await fetchDataSizesOfColor();
@@ -80,7 +87,7 @@ export default function ProductDetail() {
     !productDetails ||
     !colorOfProducts ||
     !imagesOfColor ||
-    !sizesOfColor
+    !sizesOfColor 
   ) {
     return null;
   }
@@ -106,14 +113,25 @@ export default function ProductDetail() {
                 ))}
               </Swiper>
             </div>
+            <div style={{padding: "40px 60px"}} className="mt-3">
+                <div className="mb-2">
+                  <span>
+                    <b>Description:</b>{" "}
+                  </span>
+                </div>
+                <p>{splitDescription(product.description)}</p>
+              </div>
           </div>
           <div className="col-lg-4">
             <div className="row gy-3" style={{ padding: "40px 40px" }}>
               <div>
                 <h4>{product.name}</h4>
-                <h4 style={{ color: "red" }}>
+                <h4 style={{ color: "yellow" }}>
                   <b>Price: </b>${product.price}
                 </h4>
+                <h6 style={{ color: "red" }}>
+                  <b>Only <span>{sumAmount}</span> products left in stock</b>
+                </h6>
               </div>
               <div className="mt-3">
                 <div className="mb-2">
@@ -124,7 +142,7 @@ export default function ProductDetail() {
                 <div className="row">
                   {colorOfProducts.map((item) => (
                     <div className="col-2 " key={item.color_id}>
-                      <button 
+                      <button
                         title={item.name}
                         onClick={() =>
                           handleChangeImageByColor(item.color_id, item.name)
@@ -154,7 +172,7 @@ export default function ProductDetail() {
                         className="btn btn-sm btn-outline-primary btn-size"
                         style={{ width: "40px" }}
                         onClick={() => handleChangeSize(item.name)}
-                      > 
+                      >
                         {item.name}
                       </button>
                     </div>
@@ -189,14 +207,7 @@ export default function ProductDetail() {
                   </div>
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="mb-2">
-                  <span>
-                    <b>Description:</b>{" "}
-                  </span>
-                </div>
-                <p>{product.description}</p>
-              </div>
+
               <div className="mt-3">
                 <button className="btn-donate">Add to cart</button>
               </div>
@@ -207,5 +218,3 @@ export default function ProductDetail() {
     </section>
   );
 }
-
-

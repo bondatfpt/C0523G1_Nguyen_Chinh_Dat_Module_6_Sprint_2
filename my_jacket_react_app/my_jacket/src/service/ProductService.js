@@ -1,5 +1,15 @@
 import axios from "axios";
 
+export const getAllProduct = async (page) => {
+    try {
+        const respone = await axios.get("http://localhost:8080/api/product?page=" + page);
+        console.log(respone.data);
+        return respone.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getProductLatestOfKid  = async () => {
     try {
         const respone = await axios.get("http://localhost:8080/api/product/latest-kid");
@@ -33,6 +43,16 @@ export const getProductLatestOfMen  = async () => {
 export const getProductDetailByProductId  = async (id) => {
     try {
         const respone = await axios.get("http://localhost:8080/api/product/product-detail/detail/" + id);
+        console.log(respone.data);
+        return respone.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getSumAmountOfProduct  = async (id) => {
+    try {
+        const respone = await axios.get("http://localhost:8080/api/product/product-detail/amount/" + id);
         console.log(respone.data);
         return respone.data;
     } catch (error) {
@@ -87,4 +107,11 @@ export const truncateString = (input) => {
     } else {
       return input.substring(0, 15) + '...';
     }
+  };
+
+  
+export const splitDescription = (input) => {
+    let splitArray = input.split(".");
+    let result = splitArray.join(".\n");
+    return result;
   };

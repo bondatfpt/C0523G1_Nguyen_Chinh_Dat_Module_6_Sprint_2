@@ -1,11 +1,16 @@
 package com.example.controller;
 
+import com.example.dto.IAmountDto;
 import com.example.dto.IImageDto;
+import com.example.dto.IProductDto;
 import com.example.model.Product;
 import com.example.model.ProductDetail;
 import com.example.service.IImageService;
 import com.example.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +27,9 @@ public class RestProductController {
     private IImageService iImageService;
 
     @GetMapping("")
-    public ResponseEntity<List<ProductDetail>> findAll() {
-        List<ProductDetail> products = iProductService.findAll();
+    public ResponseEntity<Page<IProductDto>> findAll( @RequestParam(name = "page", defaultValue = "0", required = false) Integer page) {
+        Pageable pageable = PageRequest.of(page,6);
+        Page<IProductDto> products = iProductService.findAllProduct(pageable);
         if (products.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
@@ -79,4 +85,14 @@ public class RestProductController {
             return new ResponseEntity<>(product, HttpStatus.OK);
         }
     }
+    @GetMapping("product-detail/amount/{id}")
+    public ResponseEntity<IAmountDto> getSumAmountOfProduct(@PathVariable Integer id) {
+        IAmountDto iAmountDto = iProductService.getSumAmountOfProduct(id);
+        if (iAmountDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(iAmountDto, HttpStatus.OK);
+        }
+    }
+
 }

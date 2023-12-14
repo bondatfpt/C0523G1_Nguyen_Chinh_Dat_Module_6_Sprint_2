@@ -2638,12 +2638,50 @@ responsive
   padding: 40px 60px;
 }
 
-.btn-color {
-  border: 1px solid white;
+.search {
+  display: inline-block;
+  position: relative;
+  margin-top: 30px;
+  margin-left: 60px;
+  width: 100%;
 }
 
-.btn-size:active{
-  border-color:yellow; /* Màu đường viền khi active */
-  background-color: #cce5ff; /* Màu nền khi active */
-  color: yellow; 
+.search input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.search button[type="submit"] {
+  background-color: #4e99e9;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 0;
+  right: 0;
+  transition: 0.9s ease;
+}
+
+.search button[type="submit"]:hover {
+  transform: scale(1.1);
+  color: rgb(255, 255, 255);
+  background-color: blue;
+}
+
+.search .result-box {
+  color: #555;
+  margin-top: 3px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0px 2px 6px 0px rgba(50,50,50,0.33);
 }
