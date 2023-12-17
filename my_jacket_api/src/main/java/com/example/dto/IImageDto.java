@@ -6,4 +6,5 @@ public interface IImageDto {
     Integer getId();
     String getPath();
     Integer getColor_id();
+    String getProduct_detail_code();
 }

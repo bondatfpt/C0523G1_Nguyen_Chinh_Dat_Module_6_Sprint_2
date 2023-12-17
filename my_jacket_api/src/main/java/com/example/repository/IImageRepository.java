@@ -52,11 +52,11 @@ public interface IImageRepository extends JpaRepository<Image,Integer> {
             "GROUP BY latest_products.id, latest_products.name,latest_products.price",nativeQuery = true)
     List<IImageDto> getProductLatestOfMen();
 
-    @Query(value = "SELECT MAX(image.path) as `path`,product_detail.color_id, color.name FROM my_jacket.image\n" +
-            "join product_detail on product_detail.id = image.product_detail_id \n" +
-            "join product on product.id = product_detail.product_id and product.id = :id  and image.is_deleted = 0\n" +
-            "join color on color.id = product_detail.color_id\n" +
-            "group by product_detail.color_id",nativeQuery = true)
+    @Query(value = "SELECT MAX(image.path) as `path`,product_detail.color_id, color.name,product_detail.product_detail_code FROM my_jacket.image\n" +
+            "                       join product_detail on product_detail.id = image.product_detail_id and product_detail.is_deleted = 0\n" +
+            "                       join product on product.id = product_detail.product_id and product.id = :id  and image.is_deleted = 0\n" +
+            "                        join color on color.id = product_detail.color_id \n" +
+            "                        group by product_detail.color_id, product_detail.product_detail_code",nativeQuery = true)
     List<IImageDto> getColorOfProduct(@Param("id") Integer id);
 
     @Query(value = "SELECT image.path, product_detail.color_id FROM my_jacket.image\n" +

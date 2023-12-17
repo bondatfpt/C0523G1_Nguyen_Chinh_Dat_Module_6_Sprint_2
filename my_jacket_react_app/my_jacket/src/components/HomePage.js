@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { getAllProduct, truncateString } from "../service/ProductService";
 import { Link } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
-  const [products, setProducts] = useState();
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState([]);
-  const [nameSearch, setNameSearch] = useState("3s");
-  const [categoryId, setCategoryId] = useState(2);
+  const { nameSearch, categoryId, isSearch, setIsSearch } =
+    useContext(AppContext);
+
   const fetchData = async () => {
-    const data = await getAllProduct(page,nameSearch,categoryId);
+    const data = await getAllProduct(page, nameSearch, categoryId);
     const totalP = totalPageArray(data.totalPages);
     setTotalPage(totalP);
     setProducts(data.content);
@@ -17,7 +21,11 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+    if (isSearch) {
+      setPage(0);
+      setIsSearch(!isSearch);
+    }
+  }, [page, nameSearch, categoryId]);
 
   const totalPageArray = (totalP) => {
     const arr = [];
@@ -27,12 +35,16 @@ export default function HomePage() {
     return arr;
   };
 
-  if (!products || !totalPage) {
-    return null;
-  }
+  // if ( !products || !totalPage) {
+  //   return(
+  //     <div>
+  //       <h1>hello</h1>
+  //     </div>
+  //   )
+  // }
   return (
     <div>
-      <div className="main-banner" id="top">
+      {/* <div className="main-banner" id="top">
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-6">
@@ -118,7 +130,6 @@ export default function HomePage() {
                           </div>
                         </div>
                         <img src="/images/baner-right-image-03.jpg"></img>
-                        {/* <div style={{ backgroundImage: `url(https://bizweb.dktcdn.net/100/438/408/products/akk5021-cam-4.jpg?v=1690163745090)`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', width: '100%', height: '270px' }}></div> */}
                       </div>
                     </div>
                   </div>
@@ -150,8 +161,22 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </div>
-      <section className="section" id="products">
+      </div> */}
+      {/* <div className="radio-inputs main-banner">
+        <label className="radio">
+          <input type="radio" name="radio" defaultChecked />
+          <span className="name">HTML</span>
+        </label>
+        <label className="radio">
+          <input type="radio" name="radio" />
+          <span className="name">React</span>
+        </label>
+        <label className="radio">
+          <input type="radio" name="radio" />
+          <span className="name">Vue</span>
+        </label>
+      </div> */}
+      {products !== undefined ? <> <section style={{ marginTop: "60px" }} className="section" id="products">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
@@ -176,16 +201,18 @@ export default function HomePage() {
                           </Link>
                         </li>
                         <li>
-                          <a href="single-product.html">
+                          <a>
                             <i className="fa fa-star" />
                           </a>
                         </li>
                       </ul>
                     </div>
+                    <Link to = {`/product-detail/${item.id}`}>
                     <img
                       src={item.path}
                       style={{ width: "100%", height: "450px" }}
                     />
+                    </Link>
                   </div>
                   <div className="down-content">
                     <h4>{truncateString(item.name)}</h4>
@@ -279,7 +306,7 @@ export default function HomePage() {
                     ? "disabled"
                     : ""
                 }`}
-                onClick={() => setPage(totalPage[totalPage.length - 1])}
+                onClick={() => setPage(totalPage[totalPage.length - 2])}
                 aria-label="Next"
               >
                 <small aria-hidden="true">&gt;&gt;</small>
@@ -287,7 +314,7 @@ export default function HomePage() {
             </li>
           </ul>
         </nav>
-      </div>
+      </div></> : <div>Hello</div>}
     </div>
   );
 }

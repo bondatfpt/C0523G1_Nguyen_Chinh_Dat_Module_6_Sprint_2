@@ -24,6 +24,8 @@ public class Product {
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 
+    private String productCode;
+
     @JsonBackReference
     @OneToMany(mappedBy = "product")
     private Set<ProductDetail> productDetails;
@@ -35,13 +37,14 @@ public class Product {
     public Product() {
     }
 
-    public Product(Integer id, String name, Double price, LocalDateTime dateAdded, String description, boolean isDeleted, Set<ProductDetail> productDetails, Category category) {
+    public Product(Integer id, String name, Double price, LocalDateTime dateAdded, String description, boolean isDeleted, String productCode, Set<ProductDetail> productDetails, Category category) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.dateAdded = dateAdded;
         this.description = description;
         this.isDeleted = isDeleted;
+        this.productCode = productCode;
         this.productDetails = productDetails;
         this.category = category;
     }
@@ -107,5 +110,13 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 }

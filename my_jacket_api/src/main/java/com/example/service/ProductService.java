@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dto.IAmountDto;
+import com.example.dto.ICartDetailDto;
 import com.example.dto.IProductDto;
 import com.example.model.Product;
 import com.example.model.ProductDetail;
@@ -14,11 +15,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductService implements IProductService{
+public class ProductService implements IProductService {
     @Autowired
     private IProductDetailRepository iProductDetailRepository;
     @Autowired
-    private  IProductRepository iProductRepository;
+    private IProductRepository iProductRepository;
 
     @Override
     public List<ProductDetail> findAll() {
@@ -47,7 +48,7 @@ public class ProductService implements IProductService{
 
     @Override
     public Page<IProductDto> findProductByName(Pageable pageable, String name) {
-        return iProductRepository.findProductByName(pageable,name);
+        return iProductRepository.findProductByName(pageable, name);
     }
 
     @Override
@@ -58,5 +59,25 @@ public class ProductService implements IProductService{
     @Override
     public Page<IProductDto> findProductByNameAndCategoryId(Pageable pageable, Integer id, String name) {
         return iProductRepository.findProductByNameAndCategoryId(pageable, id, name);
+    }
+
+    @Override
+    public List<IProductDto> getProductByName(String name) {
+        return iProductRepository.getProductByName(name);
+    }
+
+    @Override
+    public IAmountDto getAmountOfProductOfColorOfSize(Integer productId, Integer colorId, Integer sizeId) {
+        return iProductDetailRepository.getAmountOfProductOfColorOfSize(productId, colorId, sizeId);
+    }
+
+    @Override
+    public IProductDto getIdProductDetail(Integer productId, Integer colorId, Integer sizeId) {
+        return iProductDetailRepository.getIdProductDetail(productId, colorId, sizeId);
+    }
+
+    @Override
+    public List<ICartDetailDto> getAllCartDetailByCartIdAndAccountId(Integer accountId, Integer cartId) {
+        return iProductDetailRepository.getAllCartDetailByCartIdAndAccountId(accountId, cartId);
     }
 }

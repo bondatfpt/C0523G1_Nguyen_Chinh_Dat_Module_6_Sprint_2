@@ -9,7 +9,7 @@ export default function Footer() {
             <div className="col-lg-3">
               <div className="first-item">
                 <div className="logo">
-                <img src="/images/white-logo.png"/>
+                <img src="/images/logo-black.png"/>
 
                 </div>
                 <ul>
@@ -92,22 +92,22 @@ export default function Footer() {
                 </p>
                 <ul>
                   <li>
-                    <a href="#">
+                    <a>
                       <i className="fa fa-facebook" />
                     </a>
                   </li>
                   <li>
-                    <a href="#">
+                    <a>
                       <i className="fa fa-twitter" />
                     </a>
                   </li>
                   <li>
-                    <a href="#">
+                    <a>
                       <i className="fa fa-linkedin" />
                     </a>
                   </li>
                   <li>
-                    <a href="#">
+                    <a >
                       <i className="fa fa-behance" />
                     </a>
                   </li>

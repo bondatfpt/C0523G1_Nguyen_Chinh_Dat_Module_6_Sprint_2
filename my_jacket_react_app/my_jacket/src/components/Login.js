@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { login } from "../service/LoginService";
 import { Formik, Form, Field } from "formik";
@@ -6,13 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { decodeJwt, saveJwt } from "../service/Jwt";
 import { getIdFromJwt } from "../service/Jwt";
+import { AppContext } from "../context/AppContext";
+import { createCart } from "../service/CartService";
 
 export default function Login({ showModal, handleHideModal,setIdLogin }) {
+  const {isLogin, setIsLogin} = useContext(AppContext);
   const navigate = useNavigate();
   const handleSubmit = async (loginRequest) => {
     const response = await login(loginRequest);
     console.log(response.data.accessToken);
     if (response.status == 200) {
+      setIsLogin(true);
       saveJwt(response.data.accessToken);
       const idLogin = getIdFromJwt();
       setIdLogin(idLogin);

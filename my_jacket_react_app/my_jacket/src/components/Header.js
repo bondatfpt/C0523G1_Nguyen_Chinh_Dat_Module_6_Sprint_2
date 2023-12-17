@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Login from "./Login";
 import {
   getUsernameFromJwt,
@@ -6,15 +6,37 @@ import {
   getRolesFromJwt,
   removeJwt,
 } from "../service/Jwt";
+import { getProductByName } from "../service/ProductService";
 import { getUserByAccountId } from "../service/LoginService";
 import { Link } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
 export default function Header() {
   const [showModal, setShowModal] = useState(false);
+  const [products, setProducts] = useState();
+  const navigate = useNavigate();
   const [user, setUser] = useState();
   const [idLogin, setIdLogin] = useState("");
+  const {
+    nameSearch,
+    setNameSearch,
+    categoryId,
+    nameRecommend,
+    setNameRecommend,
+    setCategoryId,
+    isSearch,
+    setIsSearch,
+    categories,
+  } = useContext(AppContext);
+
+  const fetchDataProductByName = async () => {
+    const products = await getProductByName(nameSearch);
+    setProducts(products);
+  };
 
   const fetchDataUser = async () => {
     const jwt = localStorage.getItem("jwt");
+    fetchDataProductByName();
     if (jwt) {
       const idLogin = getIdFromJwt();
       setIdLogin(idLogin);
@@ -28,7 +50,7 @@ export default function Header() {
   };
   useEffect(() => {
     fetchDataUser();
-  }, [idLogin]);
+  }, [idLogin,nameRecommend]);
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -37,8 +59,20 @@ export default function Header() {
   const handleHideModal = () => {
     setShowModal(false);
   };
+  const handleChangeNameSearch = (event) => {
+    setNameSearch(event.target.value);
+    setIsSearch(!isSearch);
+    setNameRecommend(event.target.value);
+    navigate("/");
+  };
 
-  if (idLogin !== "" && !user) {
+  const handleChangeCategoryId = (event) => {
+    setCategoryId(event.target.value);
+    setIsSearch(!isSearch);
+    navigate("/");
+  };
+
+  if ((idLogin !== "" && !user) || !categories || !products ) {
     return null;
   }
 
@@ -46,21 +80,34 @@ export default function Header() {
     <div>
       <header className="header-area header-sticky">
         <div className="container">
-          {/* <div className="row">
-            <div className="col-12"> */}
-          {/* <nav className="main-nav"> */}
           <div className="row main-nav">
             <div className="col-lg-2 col-md-5">
               <Link to="/" className="logo">
-                <img src="/images/logo.png" />
+                <img  src="/images/logo4.png" />
               </Link>
             </div>
             <div className="col-lg-5 col-md-5">
               <div className="search">
-                <form>
-                  <input placeholder="Enter a name product" type="text" />
-                  <button type="submit">Search</button>
-                  <div className="result-box d-none">
+              <div className="btn-category">
+                  <select name="categoryId" onChange={handleChangeCategoryId}>
+                    <option value="">All</option>
+                    {categories.map((item) => (
+                      <option value={item.id} key={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <input
+                  onChange={handleChangeNameSearch}
+                  placeholder="Enter a name product"
+                  type="text"
+                  name="name"
+                />
+                <div>
+                <button type="submit">Search</button></div>
+                {/* <div className="result-box d-none">
+                  {products.map((item) => (
                     <div
                       style={{
                         marginBottom: "5px",
@@ -70,17 +117,21 @@ export default function Header() {
                     >
                       <div className="col-2">
                         <img
-                          style={{ width: "100%", height: "100%", marginLeft:"2px"}}
-                          src="https://bizweb.dktcdn.net/100/438/408/products/phn4002-xah-5-01dfc710-c70a-4512-9ca2-ffdad65bd67d.jpg?v=1698632108940"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            marginLeft: "2px",
+                          }}
+                          src={item.path}
                         ></img>
                       </div>
                       <div className="col-10">
-                        <p>Women's Long, Ultra-Light Life Jacket</p>
+                        <p>{item.name}</p>
                       </div>
-                      <hr style={{width:"100%"}}></hr>
+                      <hr style={{ width: "100%" }}></hr>
                     </div>
-                  </div>
-                </form>
+                   ))} 
+                </div> */}
               </div>
             </div>
             <div className=" col-lg-5 col-md-2 ">
@@ -88,16 +139,10 @@ export default function Header() {
                 <li className="scroll-to-section">
                   <Link to="/">Home</Link>
                 </li>
-                {/* <li className="scroll-to-section">
-                  <a href="#men">Men</a>
+                 <li className="scroll-to-section">
+                  <Link to="/cart" >Cart</Link>
                 </li>
-                <li className="scroll-to-section">
-                  <a href="#women">Women</a>
-                </li>
-                <li className="scroll-to-section">
-                  <a href="#kids">Kid</a>
-                </li> */}
-                {idLogin == "" && (
+                {!user && (
                   <li className="scroll-to-section">
                     <a
                       onClick={handleShowModal}
@@ -109,14 +154,18 @@ export default function Header() {
                   </li>
                 )}
 
-                {idLogin !== "" && (
+                {user && (
                   <li className="scroll-to-section">
-                    <a id="dropdownMenuButton1" data-bs-toggle="dropdown">
+                    <a
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      onClick={handleLogout}
+                    >
                       {user.name}
                     </a>
                     <ul
                       className="dropdown-menu"
-                      aria-labelledby="dropdownMenuButton1"
+                      aria-labelledby="dropdownMenuButton"
                     >
                       <li>
                         <a className="dropdown-item" onClick={handleLogout}>

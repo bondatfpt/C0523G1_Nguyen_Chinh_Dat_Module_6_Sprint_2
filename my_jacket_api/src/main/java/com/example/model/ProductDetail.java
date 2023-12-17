@@ -14,6 +14,7 @@ public class ProductDetail {
 
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
+    private String productDetailCode;
 
     @JsonBackReference
     @OneToMany(mappedBy = "productDetail")
@@ -31,13 +32,18 @@ public class ProductDetail {
     @JoinColumn(name = "size_id", referencedColumnName = "id")
     private Size size;
 
+    @JsonBackReference
+    @OneToMany(mappedBy = "productDetail")
+    private Set<CartDetail> cartDetails;
+
     public ProductDetail() {
     }
 
-    public ProductDetail(Integer id, Integer quantity, boolean isDeleted, Set<Image> images, Product product, Color color, Size size) {
+    public ProductDetail(Integer id, Integer quantity, boolean isDeleted, String productDetailCode, Set<Image> images, Product product, Color color, Size size) {
         this.id = id;
         this.quantity = quantity;
         this.isDeleted = isDeleted;
+        this.productDetailCode = productDetailCode;
         this.images = images;
         this.product = product;
         this.color = color;
@@ -99,5 +105,23 @@ public class ProductDetail {
 
     public void setImages(Set<Image> images) {
         this.images = images;
+    }
+
+    public String getProductDetailCode() {
+        return productDetailCode;
+    }
+
+    public void setProductDetailCode(String productDetailCode) {
+        this.productDetailCode = productDetailCode;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

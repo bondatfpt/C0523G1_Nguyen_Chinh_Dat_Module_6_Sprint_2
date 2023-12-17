@@ -45,6 +45,17 @@ public class RestProductController {
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
+    @GetMapping("/search/{name}")
+    public ResponseEntity<List<IProductDto>> getAllProductByName(@PathVariable String name) {
+        List<IProductDto> productDtos = iProductService.getProductByName(name);
+        if (productDtos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(productDtos, HttpStatus.OK);
+        }
+    }
+
+
     @GetMapping("/latest-kid")
     public ResponseEntity<List<IImageDto>> getProductLatestOfKid() {
         List<IImageDto> images = iImageService.getProductLatestOfKid();
@@ -104,5 +115,23 @@ public class RestProductController {
             return new ResponseEntity<>(iAmountDto, HttpStatus.OK);
         }
     }
+    @GetMapping("product-detail/amount/{productId}/{colorId}/{sizeId}")
+    public ResponseEntity<IAmountDto> getSumAmountOfProductOfColorOfSize(@PathVariable Integer productId,@PathVariable Integer colorId,@PathVariable Integer sizeId) {
+        IAmountDto iAmountDto = iProductService.getAmountOfProductOfColorOfSize(productId, colorId, sizeId);
+        if (iAmountDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(iAmountDto, HttpStatus.OK);
+        }
+    }
 
+    @GetMapping("product-detail/{productId}/{colorId}/{sizeId}")
+    public ResponseEntity<IProductDto> getIdOfProductOfColorOfSize(@PathVariable Integer productId,@PathVariable Integer colorId,@PathVariable Integer sizeId) {
+        IProductDto iProductDto = iProductService.getIdProductDetail(productId, colorId, sizeId);
+        if (iProductDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(iProductDto, HttpStatus.OK);
+        }
+    }
 }
