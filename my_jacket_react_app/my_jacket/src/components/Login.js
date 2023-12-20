@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { login } from "../service/LoginService";
 import { Formik, Form, Field } from "formik";
@@ -14,15 +14,16 @@ export default function Login({ showModal, handleHideModal,setIdLogin }) {
   const navigate = useNavigate();
   const handleSubmit = async (loginRequest) => {
     const response = await login(loginRequest);
-    console.log(response.data.accessToken);
-    if (response.status == 200) {
-      setIsLogin(true);
+    if (response) {
+       setIsLogin(true);
       saveJwt(response.data.accessToken);
-      const idLogin = getIdFromJwt();
+      const idLogin = getIdFromJwt(response.data.accessToken);
       setIdLogin(idLogin);
       handleHideModal();
-      navigate("/cart");
+      navigate("/");
       toast.success("Login success");
+    }else {
+      toast.warn("Wrong password or user name!")
     }
   };
 
@@ -30,6 +31,8 @@ export default function Login({ showModal, handleHideModal,setIdLogin }) {
     username: "",
     password: "",
   };
+
+  useEffect(()=> {},[isLogin])
 
   return (
     <div>
@@ -60,7 +63,7 @@ export default function Login({ showModal, handleHideModal,setIdLogin }) {
           >
             <Form className="form">
               <Field
-                placeholder="E-mail"
+                placeholder="User name"
                 id="email"
                 name="username"
                 className="input"

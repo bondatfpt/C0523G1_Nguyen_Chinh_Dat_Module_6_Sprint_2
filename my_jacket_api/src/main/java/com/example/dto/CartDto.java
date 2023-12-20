@@ -1,8 +1,9 @@
 package com.example.dto;
 
 public class CartDto {
-    private Integer userId;
     private Integer quantity;
+
+    private Integer accountId;
 
     private Integer cartId;
 
@@ -11,19 +12,19 @@ public class CartDto {
     public CartDto() {
     }
 
-    public CartDto(Integer userId, Integer quantity, Integer cartId, Integer productDetailId) {
-        this.userId = userId;
+    public CartDto(Integer quantity, Integer accountId, Integer cartId, Integer productDetailId) {
         this.quantity = quantity;
+        this.accountId = accountId;
         this.cartId = cartId;
         this.productDetailId = productDetailId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getAccountId() {
+        return accountId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
     public Integer getQuantity() {

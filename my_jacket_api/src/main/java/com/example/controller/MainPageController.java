@@ -32,25 +32,33 @@ public class MainPageController {
     private IUserService iUserService;
 
     @PostMapping("/login")
-    public LoginResponse authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
         System.out.println("login run");
 
-        // Xác thực từ username và password.
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
-                        loginRequest.getPassword()
-                )
-        );
-        // Nếu không xảy ra exception tức là thông tin hợp lệ
-        // Set thông tin authentication vào Security Context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println(authentication.getPrincipal());
-        String jwt = tokenProvider.generateToken((CustomAccountDetails) authentication.getPrincipal());
-        // Trả về jwt cho người dùng.
-        System.out.println("JWT ne`:" + jwt);
-        return new LoginResponse(jwt);
+        try {
+            // Xác thực từ username và password.
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
+            );
+
+            // Nếu không xảy ra exception tức là thông tin hợp lệ
+            // Set thông tin authentication vào Security Context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println(authentication.getPrincipal());
+            String jwt = tokenProvider.generateToken((CustomAccountDetails) authentication.getPrincipal());
+
+            // Trả về jwt và HTTP status code 200 OK cho người dùng.
+            return ResponseEntity.ok(new LoginResponse(jwt));
+        } catch (Exception e) {
+            // Xử lý các exception liên quan đến việc xác thực, ví dụ: Bad credentials.
+            // Trả về HTTP status code 401 Unauthorized.
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
+
 
     @GetMapping("authentication/user/{accountId}")
     public ResponseEntity<User> getUserByAccountId(@PathVariable Integer accountId) {

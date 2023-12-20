@@ -298,7 +298,7 @@ header
 }
 
 .header-area {
-  border-bottom: 3px dotted #eee;
+  border-bottom: 1px  solid blue;
   box-shadow: none;
   background-color: #fff;
   position: absolute;

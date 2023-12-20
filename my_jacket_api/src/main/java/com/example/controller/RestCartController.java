@@ -22,24 +22,6 @@ public class RestCartController {
     @Autowired
     private IProductService iProductService;
 
-    @PostMapping("/new")
-    public ResponseEntity<String> create(@RequestBody CartDto cartDto) {
-        if (cartDto.getUserId() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed !!");
-        }
-        iCartService.createCart(cartDto.getUserId());
-        return ResponseEntity.status(HttpStatus.CREATED).body("Success Created");
-    }
-
-    @PostMapping("/detail/new")
-    public ResponseEntity<String> createCartDetail(@RequestBody CartDto cartDto) {
-        if (cartDto == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed !!");
-        }
-        iCartService.createCartDetail(cartDto.getQuantity(),cartDto.getCartId(),cartDto.getProductDetailId());
-        return ResponseEntity.status(HttpStatus.CREATED).body("Success Created");
-    }
-
     @GetMapping("/{userId}")
     public ResponseEntity<ICartDto> getCartByUserId(@PathVariable Integer userId) {
         ICartDto iCartDto = iCartService.getCartByUserId(userId);
@@ -49,13 +31,41 @@ public class RestCartController {
             return new ResponseEntity<>(iCartDto, HttpStatus.OK);
         }
     }
+
     @GetMapping("cart-detail/{accountId}/{cartId}")
-    public ResponseEntity<List<ICartDetailDto>> getCartDetail(@PathVariable Integer accountId,@PathVariable Integer cartId) {
+    public ResponseEntity<List<ICartDetailDto>> getCartDetail(@PathVariable Integer accountId, @PathVariable Integer cartId) {
         List<ICartDetailDto> iCartDetailDtoList = iProductService.getAllCartDetailByCartIdAndAccountId(accountId, cartId);
-        if ( iCartDetailDtoList== null) {
+        if (iCartDetailDtoList == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(iCartDetailDtoList, HttpStatus.OK);
         }
     }
+
+    @PostMapping("/cart-detail/new")
+    public ResponseEntity<String> insertOrUpdateCartDetail(@RequestBody CartDto cartDto) {
+        if (cartDto == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed !!");
+        }
+        iCartService.insertOrUpdateCartDetail(cartDto.getCartId(),cartDto.getProductDetailId(), cartDto.getQuantity(), cartDto.getAccountId());
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success Updated");
+    }
+
+    @PostMapping("/cart-detail/update-amount")
+    public ResponseEntity<String> updateAmountCartDetail(@RequestBody CartDto cartDto) {
+        if (cartDto == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed !!");
+        }
+        iCartService.updateAmountCartDetail(cartDto.getCartId(),cartDto.getProductDetailId(), cartDto.getQuantity(), cartDto.getAccountId());
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success Updated");
+    }
+
+    @DeleteMapping("/cart-detail/{accountId}/{cartId}/{productId}/{productDetailId}")
+    public ResponseEntity<String> delete(@PathVariable Integer accountId,@PathVariable Integer cartId,
+                                         @PathVariable Integer productId, @PathVariable Integer productDetailId) {
+        iCartService.delete(accountId, cartId, productId, productDetailId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success deleted");
+    }
+
+
 }

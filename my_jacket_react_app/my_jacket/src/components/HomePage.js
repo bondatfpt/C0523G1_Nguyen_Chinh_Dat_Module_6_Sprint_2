@@ -5,7 +5,7 @@ import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState();
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState([]);
@@ -35,13 +35,10 @@ export default function HomePage() {
     return arr;
   };
 
-  // if ( !products || !totalPage) {
-  //   return(
-  //     <div>
-  //       <h1>hello</h1>
-  //     </div>
-  //   )
-  // }
+  if ( !products || !totalPage) {
+    return null;
+    
+  }
   return (
     <div>
       {/* <div className="main-banner" id="top">
@@ -176,7 +173,7 @@ export default function HomePage() {
           <span className="name">Vue</span>
         </label>
       </div> */}
-      {products !== undefined ? <> <section style={{ marginTop: "60px" }} className="section" id="products">
+      {products.length > 0 ? (<> <section style={{ marginTop: "60px" }} className="section" id="products">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
@@ -314,7 +311,7 @@ export default function HomePage() {
             </li>
           </ul>
         </nav>
-      </div></> : <div>Hello</div>}
+      </div></>) : (<div style={{marginTop:"200px", width:"100%", color:"blue",textAlign:"center"}}><h2>No Data</h2></div>)}
     </div>
   );
 }

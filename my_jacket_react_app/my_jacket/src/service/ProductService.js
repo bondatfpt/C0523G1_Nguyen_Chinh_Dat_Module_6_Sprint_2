@@ -142,12 +142,23 @@ export const getIdOfProductDetail = async (productId,colorId, sizeId) => {
     const respone = await axios.get(
       `http://localhost:8080/api/product/product-detail/${productId}/${colorId}/${sizeId}`
     );
-    console.log(respone.data.id);
     return respone.data.id;
   } catch (error) {
     console.log(error);
   }
 };
+
+export const updateQuantity = async (input,productDetailId) => {
+  try {
+    const respone = await axios.patch(
+      `http://localhost:8080/api/product/product-detail/${input}/${productDetailId}`
+    );
+    return respone.status
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 export const truncateString = (input) => {
   if (input.length <= 20) {

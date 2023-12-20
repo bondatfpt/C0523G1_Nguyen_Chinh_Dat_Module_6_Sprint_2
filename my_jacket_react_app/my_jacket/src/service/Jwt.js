@@ -5,22 +5,25 @@ export const saveJwt = (jwt) => {
   localStorage.setItem("jwt", jwt);
 };
 
-export const getIdFromJwt = () => {
-  const jwt = localStorage.getItem("jwt");
-  const decodedToken = jwtDecode(jwt);
-  return decodedToken.sub;
+export const getIdFromJwt = (jwt) => {
+  if (jwt) {
+    const decodedToken = jwtDecode(jwt);
+    return decodedToken.sub;
+  }
 };
 
-export const getUsernameFromJwt = () => {
-  const jwt = localStorage.getItem("jwt");
-  const decodedToken = jwtDecode(jwt);
-  return decodedToken.username;
+export const getUsernameFromJwt = (jwt) => {
+  if (jwt) {
+    const decodedToken = jwtDecode(jwt);
+    return decodedToken.username;
+  }
 };
 
-export const getRolesFromJwt = () => {
-  const jwt = localStorage.getItem("jwt");
-  const decodedToken = jwtDecode(jwt);
-  return decodedToken.roles;
+export const getRolesFromJwt = (jwt) => {
+  if (jwt) {
+    const decodedToken = jwtDecode(jwt);
+    return decodedToken.roles;
+  }
 };
 
 export const removeJwt = () => {

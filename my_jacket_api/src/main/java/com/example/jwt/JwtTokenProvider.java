@@ -17,7 +17,7 @@ public class JwtTokenProvider {
 
     private Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-    private final long JWT_EXPIRATION = 604800000L;
+    private final long JWT_EXPIRATION = 60480L;
 
 
     public String generateToken(CustomAccountDetails customAccountDetails) {

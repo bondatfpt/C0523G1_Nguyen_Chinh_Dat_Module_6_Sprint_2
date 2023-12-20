@@ -35,5 +35,18 @@ public class CartService implements ICartService {
         return iCartRepository.getCartByUserId(id);
     }
 
+    @Override
+    public void insertOrUpdateCartDetail(Integer cartId, Integer productDetailId, Integer quantity, Integer accountId) {
+        iCartDetailRepository.insertOrUpdateCartDetail(cartId, productDetailId, quantity, accountId);
+    }
 
+    @Override
+    public void updateAmountCartDetail(Integer cartId, Integer productDetailId, Integer quantity, Integer accountId) {
+        iCartDetailRepository.updateAmountCartDetail(cartId, productDetailId, quantity, accountId);
+    }
+
+    @Override
+    public void delete(Integer accountId, Integer cartId, Integer productId, Integer productDetailId) {
+        iCartDetailRepository.delete(accountId,cartId,productId,productDetailId);
+    }
 }

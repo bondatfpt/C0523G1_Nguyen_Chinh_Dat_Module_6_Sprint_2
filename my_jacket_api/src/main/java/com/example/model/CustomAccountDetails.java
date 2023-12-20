@@ -42,7 +42,7 @@ public class CustomAccountDetails implements UserDetails {
 
         List<GrantedAuthority> authorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());  
         return authorities;
     }
 

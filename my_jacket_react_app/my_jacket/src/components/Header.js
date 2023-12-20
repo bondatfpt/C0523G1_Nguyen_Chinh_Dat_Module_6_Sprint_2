@@ -12,7 +12,6 @@ import { Link } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 export default function Header() {
-  const [showModal, setShowModal] = useState(false);
   const [products, setProducts] = useState();
   const navigate = useNavigate();
   const [user, setUser] = useState();
@@ -27,6 +26,7 @@ export default function Header() {
     isSearch,
     setIsSearch,
     categories,
+    isLogin,setIsLogin, showModal,handleShowModal,handleHideModal
   } = useContext(AppContext);
 
   const fetchDataProductByName = async () => {
@@ -37,8 +37,8 @@ export default function Header() {
   const fetchDataUser = async () => {
     const jwt = localStorage.getItem("jwt");
     fetchDataProductByName();
-    if (jwt) {
-      const idLogin = getIdFromJwt();
+    if (isLogin && jwt) {
+      const idLogin = getIdFromJwt(jwt);
       setIdLogin(idLogin);
       const user = await getUserByAccountId(idLogin);
       setUser(user);
@@ -47,18 +47,21 @@ export default function Header() {
   const handleLogout = () => {
     removeJwt();
     setIdLogin("");
+    setIsLogin(false);
+    console.log("Is Log out:" + isLogin);
   };
+
   useEffect(() => {
     fetchDataUser();
-  }, [idLogin,nameRecommend]);
+    const jwt = localStorage.getItem("jwt");
+    console.log("Refresh:" + isLogin);
+    const roles = getRolesFromJwt(jwt);
+    const userName = getUsernameFromJwt(jwt);
+    console.log("Role: " + roles);
+    console.log("Username:" + userName);
+  }, [idLogin,nameRecommend,isLogin]);
 
-  const handleShowModal = () => {
-    setShowModal(true);
-  };
-
-  const handleHideModal = () => {
-    setShowModal(false);
-  };
+ 
   const handleChangeNameSearch = (event) => {
     setNameSearch(event.target.value);
     setIsSearch(!isSearch);
@@ -104,8 +107,6 @@ export default function Header() {
                   type="text"
                   name="name"
                 />
-                <div>
-                <button type="submit">Search</button></div>
                 {/* <div className="result-box d-none">
                   {products.map((item) => (
                     <div
@@ -139,10 +140,12 @@ export default function Header() {
                 <li className="scroll-to-section">
                   <Link to="/">Home</Link>
                 </li>
-                 <li className="scroll-to-section">
-                  <Link to="/cart" >Cart</Link>
-                </li>
-                {!user && (
+                 {isLogin && (
+                      <li className="scroll-to-section">
+                      <Link to="/cart" >Cart</Link>
+                    </li>
+                 )}
+                {isLogin === false && (
                   <li className="scroll-to-section">
                     <a
                       onClick={handleShowModal}
@@ -154,12 +157,11 @@ export default function Header() {
                   </li>
                 )}
 
-                {user && (
+                {isLogin === true && (
                   <li className="scroll-to-section">
                     <a
                       id="dropdownMenuButton1"
                       data-bs-toggle="dropdown"
-                      onClick={handleLogout}
                     >
                       {user.name}
                     </a>
@@ -172,16 +174,6 @@ export default function Header() {
                           Log out
                         </a>
                       </li>
-                      {/* <li>
-                          <a className="dropdown-item" href="#">
-                            Another action
-                          </a>
-                        </li>
-                        <li>
-                          <a className="dropdown-item" href="#">
-                            Something else here
-                          </a>
-                        </li> */}
                     </ul>
                   </li>
                 )}
@@ -191,9 +183,6 @@ export default function Header() {
               </a>
             </div>
           </div>
-          {/* </nav> */}
-          {/* </div>
-          </div> */}
         </div>
       </header>
       <Login
