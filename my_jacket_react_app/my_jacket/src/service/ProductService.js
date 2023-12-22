@@ -130,7 +130,6 @@ export const getAmountOfSizeOfColorOfProduct = async (productId,colorId, sizeId)
     const respone = await axios.get(
       `http://localhost:8080/api/product/product-detail/amount/${productId}/${colorId}/${sizeId}`
     );
-    console.log(respone.data);
     return respone.data;
   } catch (error) {
     console.log(error);
@@ -152,6 +151,17 @@ export const updateQuantity = async (input,productDetailId) => {
   try {
     const respone = await axios.patch(
       `http://localhost:8080/api/product/product-detail/${input}/${productDetailId}`
+    );
+    return respone.status
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateQuantityAfterPay = async (value) => {
+  try {
+    const respone = await axios.patch(
+      "http://localhost:8080/api/product/product-detail/update-amount", value
     );
     return respone.status
   } catch (error) {

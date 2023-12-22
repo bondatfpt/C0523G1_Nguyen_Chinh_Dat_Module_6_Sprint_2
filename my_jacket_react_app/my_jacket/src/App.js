@@ -11,18 +11,22 @@ import Kid from "./components/Kid";
 import Men from "./components/Men";
 import Women from "./components/Women";
 import { AppProvider } from "./context/AppContext";
+import Invoice from "./components/Invoice";
+import History from "./components/History";
 
 function App() {
   return (
     <div className="App">
       <AppProvider>
-      <Header />
+        <Header/>
       <Routes>
         <Route element={<HomePage />} path=""></Route>
         <Route element={<Cart />} path="/cart"></Route>
         <Route element={<Kid/>} path="/kid"></Route>
         <Route element={<Men/>} path="/men"></Route>
         <Route element={<Women/>} path="/women"></Route>
+        <Route element= {<Invoice/>} path="/invoice"></Route>
+        <Route element= {<History/>} path="/history"></Route>
         <Route element={<ProductDetail />} path="/product-detail/:id"></Route>
       </Routes>
       <Footer />

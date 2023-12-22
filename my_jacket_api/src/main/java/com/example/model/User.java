@@ -1,9 +1,11 @@
 package com.example.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -27,11 +29,13 @@ public class User {
     private boolean isActive;
     @Column(columnDefinition = "boolean default false")
     private boolean gender;
-
+    @OneToMany(mappedBy = "user")
+    @JsonBackReference
+    private Set<Invoice> invoices;
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
-
     @OneToOne
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
@@ -39,7 +43,11 @@ public class User {
     public User() {
     }
 
-    public User(Integer id, String name, Date birthday, String email, String phoneNumber, String avatar, boolean isDeleted, boolean isActive, boolean gender, Location location, Account account) {
+    public User(Integer id) {
+        this.id = id;
+    }
+
+    public User(Integer id, String name, Date birthday, String email, String phoneNumber, String avatar, boolean isDeleted, boolean isActive, boolean gender, Set<Invoice> invoices, Location location, Account account) {
         this.id = id;
         this.name = name;
         this.birthday = birthday;
@@ -49,8 +57,17 @@ public class User {
         this.isDeleted = isDeleted;
         this.isActive = isActive;
         this.gender = gender;
+        this.invoices = invoices;
         this.location = location;
         this.account = account;
+    }
+
+    public Set<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(Set<Invoice> invoices) {
+        this.invoices = invoices;
     }
 
     public Integer getId() {

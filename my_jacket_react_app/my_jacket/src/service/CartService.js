@@ -67,10 +67,22 @@ export const updateAmountCartDetail = async (value) => {
     }
   };
 
-  export const deleteCartDetail = async (accountId,cartId,productId,productDetailId) => {
+  export const deleteCartDetail = async (userId,cartId,productId,productDetailId) => {
     try {
       const respone = await axios.delete(
-        `http://localhost:8080/api/cart/cart-detail/${accountId}/${cartId}/${productId}/${productDetailId}`);
+        `http://localhost:8080/api/cart/cart-detail/${userId}/${cartId}/${productId}/${productDetailId}`);
+      
+      return respone.status;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  export const deleteCartDetailFlowInvoice = async (userId,cartId) => {
+    try {
+      const respone = await axios.delete(
+        `http://localhost:8080/api/cart/cart-detail/${userId}/${cartId}`);
+      
       return respone.status;
     } catch (error) {
       console.log(error);

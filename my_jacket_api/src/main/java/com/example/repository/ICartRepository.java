@@ -17,6 +17,6 @@ public interface ICartRepository extends JpaRepository<Cart,Integer> {
     void createCart(@Param("userId") Integer userId);
 
     @Query(value = "SELECT cart.id as cart_id FROM my_jacket.cart\n" +
-            "join account on account.id = cart.user_id and account.is_deleted = 0 and account.id = :id",nativeQuery = true)
+            "join user on user.id = cart.user_id  and user.id = :id",nativeQuery = true)
     ICartDto getCartByUserId (@Param("id") Integer id);
 }

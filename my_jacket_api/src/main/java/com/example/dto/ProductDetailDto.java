@@ -1,21 +1,19 @@
 package com.example.dto;
 
-public class CartDto {
+public class ProductDetailDto {
     private Integer quantity;
-
     private Integer userId;
 
-    private Integer cartId;
-
+    private Integer invoiceId;
     private Integer productDetailId;
 
-    public CartDto() {
+    public ProductDetailDto() {
     }
 
-    public CartDto(Integer quantity, Integer userId, Integer cartId, Integer productDetailId) {
+    public ProductDetailDto(Integer quantity, Integer userId, Integer invoiceId, Integer productDetailId) {
         this.quantity = quantity;
         this.userId = userId;
-        this.cartId = cartId;
+        this.invoiceId = invoiceId;
         this.productDetailId = productDetailId;
     }
 
@@ -35,12 +33,12 @@ public class CartDto {
         this.quantity = quantity;
     }
 
-    public Integer getCartId() {
-        return cartId;
+    public Integer getInvoiceId() {
+        return invoiceId;
     }
 
-    public void setCartId(Integer cartId) {
-        this.cartId = cartId;
+    public void setInvoiceId(Integer invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public Integer getProductDetailId() {

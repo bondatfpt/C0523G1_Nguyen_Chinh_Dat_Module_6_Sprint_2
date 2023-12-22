@@ -13,11 +13,6 @@ public class CartDetail {
     private Integer quantity;
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
-
-    @JsonBackReference
-    @OneToMany(mappedBy = "cartDetail")
-    private Set<Payment> payments;
-
     @ManyToOne
     @JoinColumn(columnDefinition = "cart_id",referencedColumnName = "id")
     private Cart cart;
@@ -29,21 +24,12 @@ public class CartDetail {
     public CartDetail() {
     }
 
-    public CartDetail(Integer id, Integer quantity, boolean isDeleted, Set<Payment> payments, Cart cart, ProductDetail productDetail) {
+    public CartDetail(Integer id, Integer quantity, boolean isDeleted, Cart cart, ProductDetail productDetail) {
         this.id = id;
         this.quantity = quantity;
         this.isDeleted = isDeleted;
-        this.payments = payments;
         this.cart = cart;
         this.productDetail = productDetail;
-    }
-
-    public Set<Payment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(Set<Payment> payments) {
-        this.payments = payments;
     }
 
     public Integer getId() {

@@ -2,26 +2,26 @@ import React, { useContext, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { login } from "../service/LoginService";
 import { Formik, Form, Field } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { decodeJwt, saveJwt } from "../service/Jwt";
 import { getIdFromJwt } from "../service/Jwt";
 import { AppContext } from "../context/AppContext";
-import { createCart } from "../service/CartService";
 
 export default function Login({ showModal, handleHideModal,setIdLogin }) {
-  const {isLogin, setIsLogin} = useContext(AppContext);
+  const {isLogin, setIsLogin,cartDetails} = useContext(AppContext);
   const navigate = useNavigate();
   const handleSubmit = async (loginRequest) => {
     const response = await login(loginRequest);
     if (response) {
-       setIsLogin(true);
+      setIsLogin(true);
       saveJwt(response.data.accessToken);
       const idLogin = getIdFromJwt(response.data.accessToken);
       setIdLogin(idLogin);
       handleHideModal();
       navigate("/");
       toast.success("Login success");
+    
     }else {
       toast.warn("Wrong password or user name!")
     }
@@ -32,7 +32,11 @@ export default function Login({ showModal, handleHideModal,setIdLogin }) {
     password: "",
   };
 
-  useEffect(()=> {},[isLogin])
+  useEffect(()=> {
+    if(cartDetails.length > 0 && isLogin){
+      toast.info(<Link to="/invoice">You have an unpaid order.</Link>);
+    }
+  },[isLogin])
 
   return (
     <div>

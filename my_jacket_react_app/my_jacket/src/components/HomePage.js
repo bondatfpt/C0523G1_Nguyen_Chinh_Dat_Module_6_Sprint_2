@@ -3,13 +3,14 @@ import { getAllProduct, truncateString } from "../service/ProductService";
 import { Link } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
+import {toast} from "react-toastify";
 
 export default function HomePage() {
   const [products, setProducts] = useState();
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState([]);
-  const { nameSearch, categoryId, isSearch, setIsSearch } =
+  const { nameSearch, categoryId, isSearch, setIsSearch,cartDetails,isLogin } =
     useContext(AppContext);
 
   const fetchData = async () => {
@@ -41,7 +42,7 @@ export default function HomePage() {
   }
   return (
     <div>
-      {/* <div className="main-banner" id="top">
+       <div className="main-banner" id="top">
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-6">
@@ -158,22 +159,8 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </div> */}
-      {/* <div className="radio-inputs main-banner">
-        <label className="radio">
-          <input type="radio" name="radio" defaultChecked />
-          <span className="name">HTML</span>
-        </label>
-        <label className="radio">
-          <input type="radio" name="radio" />
-          <span className="name">React</span>
-        </label>
-        <label className="radio">
-          <input type="radio" name="radio" />
-          <span className="name">Vue</span>
-        </label>
-      </div> */}
-      {products.length > 0 ? (<> <section style={{ marginTop: "60px" }} className="section" id="products">
+      </div> 
+      {products.length > 0 ? (<> <section style={{ marginTop: "0px" }} className="section" id="products">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
@@ -214,23 +201,6 @@ export default function HomePage() {
                   <div className="down-content">
                     <h4>{truncateString(item.name)}</h4>
                     <span style={{ color: "red" }}>${item.price}</span>
-                    <ul className="stars">
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                    </ul>
                   </div>
                 </div>
               </div>

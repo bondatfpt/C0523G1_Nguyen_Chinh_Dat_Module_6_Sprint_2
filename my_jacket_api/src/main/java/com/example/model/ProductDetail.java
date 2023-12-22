@@ -36,10 +36,14 @@ public class ProductDetail {
     @OneToMany(mappedBy = "productDetail")
     private Set<CartDetail> cartDetails;
 
+    @JsonBackReference
+    @OneToMany(mappedBy = "productDetail")
+    private Set<InvoiceDetail> invoiceDetails;
+
     public ProductDetail() {
     }
 
-    public ProductDetail(Integer id, Integer quantity, boolean isDeleted, String productDetailCode, Set<Image> images, Product product, Color color, Size size) {
+    public ProductDetail(Integer id, Integer quantity, boolean isDeleted, String productDetailCode, Set<Image> images, Product product, Color color, Size size, Set<CartDetail> cartDetails, Set<InvoiceDetail> invoiceDetails) {
         this.id = id;
         this.quantity = quantity;
         this.isDeleted = isDeleted;
@@ -48,6 +52,24 @@ public class ProductDetail {
         this.product = product;
         this.color = color;
         this.size = size;
+        this.cartDetails = cartDetails;
+        this.invoiceDetails = invoiceDetails;
+    }
+
+    public Set<CartDetail> getCartDetails() {
+        return cartDetails;
+    }
+
+    public void setCartDetails(Set<CartDetail> cartDetails) {
+        this.cartDetails = cartDetails;
+    }
+
+    public Set<InvoiceDetail> getInvoiceDetails() {
+        return invoiceDetails;
+    }
+
+    public void setInvoiceDetails(Set<InvoiceDetail> invoiceDetails) {
+        this.invoiceDetails = invoiceDetails;
     }
 
     public Integer getId() {

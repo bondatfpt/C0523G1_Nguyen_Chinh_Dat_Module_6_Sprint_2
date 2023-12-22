@@ -53,15 +53,15 @@ public interface IImageRepository extends JpaRepository<Image,Integer> {
     List<IImageDto> getProductLatestOfMen();
 
     @Query(value = "SELECT MAX(image.path) as `path`,product_detail.color_id, color.name,product_detail.product_detail_code FROM my_jacket.image\n" +
-            "                       join product_detail on product_detail.id = image.product_detail_id and product_detail.is_deleted = 0\n" +
-            "                       join product on product.id = product_detail.product_id and product.id = :id  and image.is_deleted = 0\n" +
+            "                       join product_detail on product_detail.id = image.product_detail_id \n" +
+            "                       join product on product.id = product_detail.product_id and product.id = :id  \n" +
             "                        join color on color.id = product_detail.color_id \n" +
             "                        group by product_detail.color_id, product_detail.product_detail_code",nativeQuery = true)
     List<IImageDto> getColorOfProduct(@Param("id") Integer id);
 
     @Query(value = "SELECT image.path,product.price, product_detail.color_id FROM my_jacket.image\n" +
-            "join product_detail on product_detail.id = image.product_detail_id and color_id = :colorId and product_detail.is_deleted = 0\n" +
-            "join product on product.id = product_detail.product_id and product.id = :productId and product.is_deleted = 0\n" +
+            "join product_detail on product_detail.id = image.product_detail_id and color_id = :colorId \n" +
+            "join product on product.id = product_detail.product_id and product.id = :productId \n" +
             "limit 4",nativeQuery = true)
     List<IImageDto> getImagesOfColor (@Param("colorId") Integer colorId, @Param("productId") Integer productId);
 }

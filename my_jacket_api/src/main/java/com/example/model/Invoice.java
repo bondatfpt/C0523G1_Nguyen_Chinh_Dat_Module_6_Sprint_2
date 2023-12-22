@@ -1,48 +1,67 @@
 package com.example.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String invoiceCode;
     @Column(columnDefinition = "datetime")
     private LocalDateTime dateOrder;
-    private String location;
-    private String phone;
-    private String buyerName;
     private Double totalPrice;
+    private Integer totalQuantity;
+    private  String otherLocation;
+    @Column(columnDefinition = "text")
+    private String note;
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
+   @ManyToOne
+   @JoinColumn(columnDefinition = "payment_id", referencedColumnName = "id")
+   private Payment payment;
 
-    @OneToOne
-    @JoinColumn(name = "cart_detail_id", referencedColumnName = "id")
-    private CartDetail cartDetail;
+    @JsonBackReference
+    @OneToMany(mappedBy = "invoice")
+    private Set<InvoiceDetail> invoiceDetails;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     public Invoice() {
     }
 
-    public Invoice(Integer id, String invoiceCode, LocalDateTime dateOrder, String location, String phone, String buyerName, Double totalPrice, boolean isDeleted, CartDetail cartDetail) {
+    public Invoice(Integer id, LocalDateTime dateOrder, Double totalPrice, Integer totalQuantity, String otherLocation, String note, boolean isDeleted, Payment payment, Set<InvoiceDetail> invoiceDetails, User user) {
         this.id = id;
-        this.invoiceCode = invoiceCode;
         this.dateOrder = dateOrder;
-        this.location = location;
-        this.phone = phone;
-        this.buyerName = buyerName;
         this.totalPrice = totalPrice;
+        this.totalQuantity = totalQuantity;
+        this.otherLocation = otherLocation;
+        this.note = note;
         this.isDeleted = isDeleted;
-        this.cartDetail = cartDetail;
+        this.payment = payment;
+        this.invoiceDetails = invoiceDetails;
+        this.user = user;
     }
 
-    public String getInvoiceCode() {
-        return invoiceCode;
+    public User getUser() {
+        return user;
     }
 
-    public void setInvoiceCode(String invoiceCode) {
-        this.invoiceCode = invoiceCode;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getOtherLocation() {
+        return otherLocation;
+    }
+
+    public void setOtherLocation(String otherLocation) {
+        this.otherLocation = otherLocation;
     }
 
     public Integer getId() {
@@ -61,36 +80,28 @@ public class Invoice {
         this.dateOrder = dateOrder;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getBuyerName() {
-        return buyerName;
-    }
-
-    public void setBuyerName(String buyerName) {
-        this.buyerName = buyerName;
-    }
-
     public Double getTotalPrice() {
         return totalPrice;
     }
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Integer getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(Integer totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public boolean isDeleted() {
@@ -101,11 +112,19 @@ public class Invoice {
         isDeleted = deleted;
     }
 
-    public CartDetail getCartDetail() {
-        return cartDetail;
+    public Payment getPayment() {
+        return payment;
     }
 
-    public void setCartDetail(CartDetail cartDetail) {
-        this.cartDetail = cartDetail;
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public Set<InvoiceDetail> getInvoiceDetails() {
+        return invoiceDetails;
+    }
+
+    public void setInvoiceDetails(Set<InvoiceDetail> invoiceDetails) {
+        this.invoiceDetails = invoiceDetails;
     }
 }

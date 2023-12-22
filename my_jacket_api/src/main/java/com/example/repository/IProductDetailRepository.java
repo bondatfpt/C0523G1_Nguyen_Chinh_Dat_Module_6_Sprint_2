@@ -8,29 +8,28 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import javax.transaction.Transactional;
 import java.util.List;
 
 public interface IProductDetailRepository extends JpaRepository<ProductDetail, Integer> {
     @Query(value = "SELECT product_detail.*FROM my_jacket.product_detail\n" +
             "            join product on product.id = product_detail.product_id \n" +
-            "            where product.id = :id and product.is_deleted = 0 and product_detail.is_deleted = 0", nativeQuery = true)
+            "            where product.id = :id ", nativeQuery = true)
     List<ProductDetail> findProductDetailByProductId(@Param("id") Integer id);
 
     @Query(value = "SELECT product_detail.product_id, sum(product_detail.quantity) as amount FROM my_jacket.product_detail\n" +
-            "            join product on product.id = product_detail.product_id and product.id = :id and product_detail.is_deleted = 0\n" +
+            "            join product on product.id = product_detail.product_id and product.id = :id\n" +
             "            ", nativeQuery = true)
     IAmountDto getSumAmountOfProduct(@Param("id") Integer id);
 
     @Query(value = "SELECT my_jacket.product_detail.quantity, product.id  FROM my_jacket.product_detail\n" +
-            "join product on product.id = product_detail.product_id and product.is_deleted = 0 and product.id = :productId\n" +
-            "where color_id = :colorId and size_id = :sizeId and product_detail.is_deleted = 0", nativeQuery = true)
+            "join product on product.id = product_detail.product_id  and product.id = :productId\n" +
+            "where color_id = :colorId and size_id = :sizeId", nativeQuery = true)
     IAmountDto getAmountOfProductOfColorOfSize(@Param("productId") Integer productId, @Param("colorId") Integer colorId, @Param("sizeId") Integer sizeId);
 
     @Query(value = "SELECT product_detail.id FROM my_jacket.product_detail\n" +
-            "join product on product.id = product_detail.product_id and product.is_deleted = 0 and product.id = :productId\n" +
-            "where color_id = :colorId and size_id = :sizeId and product_detail.is_deleted = 0", nativeQuery = true)
+            "join product on product.id = product_detail.product_id and product.id = :productId\n" +
+            "where color_id = :colorId and size_id = :sizeId", nativeQuery = true)
     IProductDto getIdProductDetail(@Param("productId") Integer productId, @Param("colorId") Integer colorId, @Param("sizeId") Integer sizeId);
 
     @Query(value = "SELECT\n" +
@@ -48,12 +47,12 @@ public interface IProductDetailRepository extends JpaRepository<ProductDetail, I
             "            FROM\n" +
             "                my_jacket.cart_detail\n" +
             "            JOIN cart ON cart.id = cart_detail.cart_id AND cart.id = :cartId\n" +
-            "            JOIN account ON account.id = cart.user_id AND account.is_deleted = 0 AND account.id = :accountId\n" +
-            "            JOIN product_detail ON product_detail.id = cart_detail.product_detail_id AND product_detail.is_deleted = 0\n" +
-            "            JOIN product ON product.id = product_detail.product_id AND product.is_deleted = 0\n" +
+            "            JOIN user ON user.id = cart.user_id AND user.is_deleted = 0 AND user.id = :userId\n" +
+            "            JOIN product_detail ON product_detail.id = cart_detail.product_detail_id \n" +
+            "            JOIN product ON product.id = product_detail.product_id \n" +
             "            JOIN color ON color.id = product_detail.color_id \n" +
             "            JOIN size ON size.id = product_detail.size_id\n" +
-            "            JOIN image ON image.product_detail_id = product_detail.id AND image.is_deleted = 0\n" +
+            "            JOIN image ON image.product_detail_id = product_detail.id\n" +
             "            GROUP BY\n" +
             "                product_name,\n" +
             "                size_name,\n" +
@@ -63,8 +62,17 @@ public interface IProductDetailRepository extends JpaRepository<ProductDetail, I
             "                product_detail.product_detail_code,\n" +
             "                product_id,\n" +
             "                cart_detail.quantity", nativeQuery = true)
-    List<ICartDetailDto> getAllCartDetailByCartIdAndAccountId(@Param("accountId") Integer accountId, @Param("cartId") Integer cartId);
+    List<ICartDetailDto> getAllCartDetailByCartIdAndAccountId(@Param("userId") Integer userId, @Param("cartId") Integer cartId);
 
-
+    @Transactional
+    @Modifying
+    @Query(value = "update product_detail\n" +
+            "join invoice_detail on invoice_detail.product_detail_id = product_detail.id and invoice_detail.product_detail_id = :productDetailId\n" +
+            "join invoice on invoice.id = invoice_detail.invoice_id and invoice_detail.invoice_id = :invoiceId\n" +
+            "join user on user.id = invoice.user_id and invoice.user_id = :userId\n" +
+            "set product_detail.quantity = product_detail.quantity - :quantity",nativeQuery = true)
+    void updateQuantityAfterPay (@Param("quantity") Integer quantity,@Param("userId") Integer userId,
+                                 @Param("invoiceId")Integer invoiceId,
+                                 @Param("productDetailId") Integer productDetailId);
 }
 

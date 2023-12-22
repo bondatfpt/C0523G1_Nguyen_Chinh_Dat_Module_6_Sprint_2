@@ -25,9 +25,12 @@ import {
   getCartByUserId,
   insertOrUpdateCartDetail,
 } from "../service/CartService";
+import { getUserByAccountId } from "../service/LoginService";
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
   const [product, setProduct] = useState();
   const [productDetails, setProductDetails] = useState();
   const [colorOfProducts, setColorOfProducts] = useState();
@@ -70,7 +73,8 @@ export default function ProductDetail() {
         amountSelect === amountProductDetail)
     ) {
       const idLogin = getIdFromJwt(jwt);
-      const cartId = await getCartByUserId(idLogin);
+      const user = await getUserByAccountId(idLogin);
+      const cartId = await getCartByUserId(user.id);
       const productDetailId = await getIdOfProductDetail(id, colorId, sizeId);
       setProductDetailId(productDetailId);
       if (!isProductInCart(productDetailId)) {
@@ -78,7 +82,7 @@ export default function ProductDetail() {
           cartId: cartId,
           productDetailId: productDetailId,
           quantity: amountSelect,
-          accountId: idLogin,
+          userId: user.id,
         };
         const respone = await insertOrUpdateCartDetail(value);
         setAmountSelect(0);
@@ -191,11 +195,13 @@ export default function ProductDetail() {
     setProductDetails(productDetails);
     if (colorId == undefined) {
       setColorId(productDetails[0].color.id);
+      setSelectedColor(productDetails[0].color.id);
       setColorName(productDetails[0].color.name);
       setSizeName(productDetails[0].size.name);
       setProductCode(productDetails[0].productDetailCode);
       setColorId(productDetails[0].color.id);
       setSizeId(productDetails[0].size.id);
+      setSelectedSize(productDetails[0].size.id);
       setName(productDetails[0].product.name);
       setPrice(productDetails[0].product.price);
     }
@@ -227,10 +233,12 @@ export default function ProductDetail() {
     setColorName(colorName);
     setProductCode(productDetailCode);
     setImage(path);
+    setSelectedColor(colorId);
   };
   const handleChangeSize = (sizeName, sizeId) => {
     setSizeName(sizeName);
     setSizeId(sizeId);
+    setSelectedSize(sizeId);
   };
 
   const increaseAmount = () => {
@@ -255,9 +263,11 @@ export default function ProductDetail() {
         await fetchDataImagesOfColor();
         await fetchDataSizesOfColor();
         await fetchDataAmountProductOfColorOfSize();
+        
       }
     };
     fetchData();
+    
   }, [colorId, id, sizeId]);
 
   if (
@@ -326,13 +336,13 @@ export default function ProductDetail() {
                 <div className="mt-3">
                   <div className="mb-2">
                     <span>
-                      <b>Select color:</b> {colorName}
+                      <b>Select color:</b> <b style={{color:"blue"}}>{colorName}</b>
                     </span>
                   </div>
                   <div className="row">
                     {colorOfProducts.map((item) => (
                       <div className="col-2 " key={item.color_id}>
-                        <button
+                        <button style={{border: selectedColor === item.color_id ? '1px solid #F2D21E' : 'none'}}
                           id="btn-color"
                           title={item.name}
                           onClick={() =>
@@ -344,8 +354,8 @@ export default function ProductDetail() {
                               item.price
                             )
                           }
-                          className="p-0 border-0 btn-color"
-                        >
+                          className={`p-0 btn-color ${selectedColor === item.color_id ? 'selected' : ''}`}
+                          >
                           <img
                             className="rounded-2"
                             style={{ width: "40px", height: "40px" }}
@@ -359,16 +369,15 @@ export default function ProductDetail() {
                 <div className="mt-3">
                   <div className="mb-2">
                     <span>
-                      <b>Select size: </b> {sizeName}
+                      <b>Select size: </b> <b style={{color:"blue"}}>{sizeName}</b>
                     </span>
                   </div>
                   <div className="row">
                     {sizesOfColor.map((item) => (
                       <div key={item.id} className="col-2">
-                        <button
+                        <button style={{border:"1px solid blue",color:"blue",width:"40px",backgroundColor: selectedSize === item.id ? 'yellow' : 'white'}}
                           id="btn-size"
-                          className="btn btn-sm btn-outline-primary btn-size"
-                          style={{ width: "40px" }}
+                          className="btn btn-sm  btn-size"
                           onClick={() => handleChangeSize(item.name, item.id)}
                         >
                           {item.name}

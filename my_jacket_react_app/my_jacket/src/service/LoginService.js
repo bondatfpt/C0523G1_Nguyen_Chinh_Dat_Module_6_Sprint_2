@@ -13,7 +13,6 @@ export const login = async (loginRequest) => {
 export const getUserByAccountId  = async (accountId) => {
     try {
         const response = await axios.get("http://localhost:8080/api/authentication/user/" + accountId);
-        console.log(response.data.name);
         return response.data;
     } catch (error) {
         console.log(error);

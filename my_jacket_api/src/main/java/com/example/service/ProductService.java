@@ -77,7 +77,12 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ICartDetailDto> getAllCartDetailByCartIdAndAccountId(Integer accountId, Integer cartId) {
-        return iProductDetailRepository.getAllCartDetailByCartIdAndAccountId(accountId, cartId);
+    public List<ICartDetailDto> getAllCartDetailByCartIdAndAccountId(Integer userId, Integer cartId) {
+        return iProductDetailRepository.getAllCartDetailByCartIdAndAccountId(userId, cartId);
+    }
+
+    @Override
+    public void updateQuantityAfterPay(Integer quantity,Integer userId, Integer invoiceId, Integer productDetailId) {
+        iProductDetailRepository.updateQuantityAfterPay(quantity,userId, invoiceId, productDetailId);
     }
 }

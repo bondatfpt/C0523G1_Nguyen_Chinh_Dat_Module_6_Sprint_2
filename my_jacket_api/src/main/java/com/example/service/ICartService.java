@@ -17,15 +17,16 @@ public interface ICartService {
             Integer cartId,
             Integer productDetailId,
             Integer quantity,
-            Integer accountId
+            Integer userId
     );
 
     void updateAmountCartDetail(Integer cartId,
                                 Integer productDetailId,
                                 Integer quantity,
-                                Integer accountId);
+                                Integer userId);
 
-    void delete (Integer accountId, Integer cartId,
+    void delete (Integer userId, Integer cartId,
                  Integer productId, Integer productDetailId);
+    void deleteCartDetailFlowInvoice (Integer userId, Integer cartId);
 
 }

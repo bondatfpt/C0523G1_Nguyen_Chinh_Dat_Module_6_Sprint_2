@@ -60,7 +60,7 @@ public class MainPageController {
     }
 
 
-    @GetMapping("authentication/user/{accountId}")
+    @GetMapping("/authentication/user/{accountId}")
     public ResponseEntity<User> getUserByAccountId(@PathVariable Integer accountId) {
         User user = iUserService.getUserByAccountId(accountId);
         if (user == null) {

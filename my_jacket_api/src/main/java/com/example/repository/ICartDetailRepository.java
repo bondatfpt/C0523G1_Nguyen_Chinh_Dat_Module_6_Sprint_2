@@ -1,15 +1,13 @@
 package com.example.repository;
 
-import com.example.dto.ICartDetailDto;
+
 import com.example.model.CartDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
-
 import javax.transaction.Transactional;
-import java.util.List;
 
 public interface ICartDetailRepository extends JpaRepository<CartDetail,Integer> {
     @Transactional
@@ -23,14 +21,14 @@ public interface ICartDetailRepository extends JpaRepository<CartDetail,Integer>
             @Param("cartId") Integer cartId,
             @Param("productDetailId") Integer productDetailId,
             @Param("quantity") Integer quantity,
-            @Param("accountId") Integer accountId
+            @Param("userId") Integer userId
     );
 
     @Procedure(name = "UpdateAmountCartDetail")
     void updateAmountCartDetail(@Param("cartId") Integer cartId,
                                 @Param("productDetailId") Integer productDetailId,
                                 @Param("quantity") Integer quantity,
-                                @Param("accountId") Integer accountId);
+                                @Param("userId") Integer userId);
     @Transactional
     @Modifying
     @Query(value = "delete cart_detail\n" +
@@ -38,7 +36,15 @@ public interface ICartDetailRepository extends JpaRepository<CartDetail,Integer>
             "join product_detail on product_detail.id = cart_detail.product_detail_id and product_detail.id = :productDetailId\n" +
             "join product on product.id = product_detail.product_id and product.id = :productId\n" +
             "join cart on cart.id = cart_detail.cart_id  and cart.id = :cartId\n" +
-            "join account on account.id = cart.user_id and account.id = :accountId",nativeQuery = true)
-    void delete (@Param("accountId")Integer accountId, @Param("cartId")Integer cartId,
+            "join user on user.id = cart.user_id and user.id = :userId",nativeQuery = true)
+    void delete (@Param("userId")Integer userId, @Param("cartId")Integer cartId,
     @Param("productId")Integer productId,@Param("productDetailId") Integer productDetailId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete cart_detail from cart_detail\n" +
+            "join cart on cart.id = cart_detail.cart_id and cart.id = :cartId\n" +
+            "join user on cart.user_id = user.id  and user.id = :userId\n" +
+            "join invoice on invoice.user_id = user.id and user.id = :userId",nativeQuery = true)
+    void deleteCartDetailFlowInvoice (@Param("userId")Integer userId, @Param("cartId")Integer cartId);
 }

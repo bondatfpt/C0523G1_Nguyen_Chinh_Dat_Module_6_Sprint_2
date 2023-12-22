@@ -1,8 +1,6 @@
 package com.example.controller;
 
-import com.example.dto.IAmountDto;
-import com.example.dto.IImageDto;
-import com.example.dto.IProductDto;
+import com.example.dto.*;
 import com.example.model.Product;
 import com.example.model.ProductDetail;
 import com.example.service.IImageService;
@@ -133,6 +131,17 @@ public class RestProductController {
         } else {
             return new ResponseEntity<>(iProductDto, HttpStatus.OK);
         }
+    }
+    @PatchMapping ("/product-detail/update-amount")
+    public ResponseEntity<String> updateAmountAfterPay(@RequestBody List<ProductDetailDto> productDetailDtos) {
+        if (productDetailDtos == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed !!");
+        }
+        for (ProductDetailDto invoiceDetailItems : productDetailDtos) {
+            iProductService.updateQuantityAfterPay(invoiceDetailItems.getQuantity(),invoiceDetailItems.getUserId(),
+                    invoiceDetailItems.getInvoiceId(), invoiceDetailItems.getProductDetailId());
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success Updated");
     }
 
 

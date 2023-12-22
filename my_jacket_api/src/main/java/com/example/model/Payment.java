@@ -1,32 +1,36 @@
 package com.example.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(columnDefinition = "datetime")
-    private LocalDateTime payDate;
 
     private String method;
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
-    @ManyToOne
-    @JoinColumn(name = "cart_detail_id", referencedColumnName = "id")
-    private CartDetail cartDetail;
 
+    @OneToMany(mappedBy = "payment")
+    @JsonBackReference
+    private Set<Invoice> invoices;
     public Payment() {
     }
 
-    public Payment(Integer id, LocalDateTime payDate, String method, boolean isDeleted, CartDetail cartDetail) {
+    public Payment(Integer id) {
         this.id = id;
-        this.payDate = payDate;
+    }
+
+    public Payment(Integer id, String method, boolean isDeleted, Set<Invoice> invoices) {
+        this.id = id;
         this.method = method;
         this.isDeleted = isDeleted;
-        this.cartDetail = cartDetail;
+        this.invoices = invoices;
     }
 
     public Integer getId() {
@@ -35,14 +39,6 @@ public class Payment {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public LocalDateTime getPayDate() {
-        return payDate;
-    }
-
-    public void setPayDate(LocalDateTime payDate) {
-        this.payDate = payDate;
     }
 
     public String getMethod() {
@@ -59,13 +55,5 @@ public class Payment {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
-    }
-
-    public CartDetail getCartDetail() {
-        return cartDetail;
-    }
-
-    public void setCartDetail(CartDetail cartDetail) {
-        this.cartDetail = cartDetail;
     }
 }

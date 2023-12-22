@@ -36,17 +36,22 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public void insertOrUpdateCartDetail(Integer cartId, Integer productDetailId, Integer quantity, Integer accountId) {
-        iCartDetailRepository.insertOrUpdateCartDetail(cartId, productDetailId, quantity, accountId);
+    public void insertOrUpdateCartDetail(Integer cartId, Integer productDetailId, Integer quantity, Integer userId) {
+        iCartDetailRepository.insertOrUpdateCartDetail(cartId, productDetailId, quantity, userId);
     }
 
     @Override
-    public void updateAmountCartDetail(Integer cartId, Integer productDetailId, Integer quantity, Integer accountId) {
-        iCartDetailRepository.updateAmountCartDetail(cartId, productDetailId, quantity, accountId);
+    public void updateAmountCartDetail(Integer cartId, Integer productDetailId, Integer quantity, Integer userId) {
+        iCartDetailRepository.updateAmountCartDetail(cartId, productDetailId, quantity, userId);
     }
 
     @Override
-    public void delete(Integer accountId, Integer cartId, Integer productId, Integer productDetailId) {
-        iCartDetailRepository.delete(accountId,cartId,productId,productDetailId);
+    public void delete(Integer userId, Integer cartId, Integer productId, Integer productDetailId) {
+        iCartDetailRepository.delete(userId,cartId,productId,productDetailId);
+    }
+
+    @Override
+    public void deleteCartDetailFlowInvoice(Integer userId, Integer cartId) {
+        iCartDetailRepository.deleteCartDetailFlowInvoice(userId, cartId);
     }
 }

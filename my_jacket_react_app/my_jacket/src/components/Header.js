@@ -11,24 +11,32 @@ import { getUserByAccountId } from "../service/LoginService";
 import { Link } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
+import { findAll } from "../service/CategoryService";
+import { toast } from "react-toastify";
 export default function Header() {
   const [products, setProducts] = useState();
+  const [categories, setCategories] = useState();
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const [idLogin, setIdLogin] = useState("");
   const {
     nameSearch,
     setNameSearch,
-    categoryId,
-    nameRecommend,
     setNameRecommend,
     setCategoryId,
     isSearch,
     setIsSearch,
-    categories,
-    isLogin,setIsLogin, showModal,handleShowModal,handleHideModal
+    isLogin,
+    setIsLogin,
+    showModal,
+    handleShowModal,
+    handleHideModal,
+    amountItem,
   } = useContext(AppContext);
-
+  const fetchDataCategories = async () => {
+    const categories = await findAll();
+    setCategories(categories);
+  };
   const fetchDataProductByName = async () => {
     const products = await getProductByName(nameSearch);
     setProducts(products);
@@ -36,7 +44,6 @@ export default function Header() {
 
   const fetchDataUser = async () => {
     const jwt = localStorage.getItem("jwt");
-    fetchDataProductByName();
     if (isLogin && jwt) {
       const idLogin = getIdFromJwt(jwt);
       setIdLogin(idLogin);
@@ -48,20 +55,14 @@ export default function Header() {
     removeJwt();
     setIdLogin("");
     setIsLogin(false);
-    console.log("Is Log out:" + isLogin);
+    toast.info("Success log out");
   };
 
   useEffect(() => {
     fetchDataUser();
-    const jwt = localStorage.getItem("jwt");
-    console.log("Refresh:" + isLogin);
-    const roles = getRolesFromJwt(jwt);
-    const userName = getUsernameFromJwt(jwt);
-    console.log("Role: " + roles);
-    console.log("Username:" + userName);
-  }, [idLogin,nameRecommend,isLogin]);
+    fetchDataCategories();
+  }, [isLogin, amountItem]);
 
- 
   const handleChangeNameSearch = (event) => {
     setNameSearch(event.target.value);
     setIsSearch(!isSearch);
@@ -75,7 +76,7 @@ export default function Header() {
     navigate("/");
   };
 
-  if ((idLogin !== "" && !user) || !categories || !products ) {
+  if (!categories) {
     return null;
   }
 
@@ -86,12 +87,12 @@ export default function Header() {
           <div className="row main-nav">
             <div className="col-lg-2 col-md-5">
               <Link to="/" className="logo">
-                <img  src="/images/logo4.png" />
+                <img src="/images/logo4.png" />
               </Link>
             </div>
             <div className="col-lg-5 col-md-5">
               <div className="search">
-              <div className="btn-category">
+                <div className="btn-category">
                   <select name="categoryId" onChange={handleChangeCategoryId}>
                     <option value="">All</option>
                     {categories.map((item) => (
@@ -107,45 +108,28 @@ export default function Header() {
                   type="text"
                   name="name"
                 />
-                {/* <div className="result-box d-none">
-                  {products.map((item) => (
-                    <div
-                      style={{
-                        marginBottom: "5px",
-                        marginTop: "2px",
-                      }}
-                      className="row"
-                    >
-                      <div className="col-2">
-                        <img
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            marginLeft: "2px",
-                          }}
-                          src={item.path}
-                        ></img>
-                      </div>
-                      <div className="col-10">
-                        <p>{item.name}</p>
-                      </div>
-                      <hr style={{ width: "100%" }}></hr>
-                    </div>
-                   ))} 
-                </div> */}
               </div>
             </div>
             <div className=" col-lg-5 col-md-2 ">
               <ul className="nav">
                 <li className="scroll-to-section">
-                  <Link to="/">Home</Link>
+                  <Link to="/">Products</Link>
                 </li>
-                 {isLogin && (
-                      <li className="scroll-to-section">
-                      <Link to="/cart" >Cart</Link>
-                    </li>
-                 )}
-                {isLogin === false && (
+                {user && isLogin && (
+                  <li className="scroll-to-section">
+                    <Link to="/cart" className="cart-link">
+                      Cart{amountItem > 0 && (<span className="cart-amount">({amountItem})</span>)}
+                    </Link>
+                  </li>
+                )}
+                {user && isLogin && (
+                  <li className="scroll-to-section">
+                    <Link to="/history" className="cart-link">
+                        History
+                    </Link>
+                  </li>
+                )}
+                {!isLogin && (
                   <li className="scroll-to-section">
                     <a
                       onClick={handleShowModal}
@@ -157,12 +141,9 @@ export default function Header() {
                   </li>
                 )}
 
-                {isLogin === true && (
+                {user && isLogin && (
                   <li className="scroll-to-section">
-                    <a
-                      id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown"
-                    >
+                    <a id="dropdownMenuButton1" data-bs-toggle="dropdown">
                       {user.name}
                     </a>
                     <ul

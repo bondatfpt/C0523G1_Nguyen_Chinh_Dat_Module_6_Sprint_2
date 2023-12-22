@@ -6,15 +6,16 @@ import {
   insertOrUpdateCartDetail,
   getCartByUserId,
   updateAmountCartDetail,
+  deleteCartDetail,
 } from "../service/CartService";
 import { getIdFromJwt } from "../service/Jwt";
 import { toast } from "react-toastify";
 import ModalConfirm from "./ModalConfirm";
-
+import { getUserByAccountId } from "../service/LoginService";
 export default function Cart() {
   const inputRef = useRef(null);
-  const [showModalDelete,setShowModalDelete] =useState(false);
-  const [productDetail,setProductDetail] =useState();
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [productDetail, setProductDetail] = useState();
   const {
     isLogin,
     cartDetails,
@@ -22,11 +23,13 @@ export default function Cart() {
     fetchDataCartDetail,
     productDetailId,
     handleShowModal,
+    isPay,
+    handleDeleteCartDetail,
   } = useContext(AppContext);
 
   useEffect(() => {
     fetchDataCartDetail();
-  }, [isLogin, productDetailId]);
+  }, [isLogin, productDetailId, showModalDelete,isPay]);
 
   const increaseAmount = async (
     productDetailId,
@@ -45,12 +48,13 @@ export default function Cart() {
       const jwt = localStorage.getItem("jwt");
       if (jwt && isLogin) {
         const idLogin = getIdFromJwt(jwt);
-        const cartId = await getCartByUserId(idLogin);
+        const user = await getUserByAccountId(idLogin);
+        const cartId = await getCartByUserId(user.id);
         const value = {
           cartId: cartId,
           productDetailId: productDetailId,
           quantity: 1,
-          accountId: idLogin,
+          userId: user.id,
         };
         await insertOrUpdateCartDetail(value);
         await fetchDataCartDetail();
@@ -60,34 +64,48 @@ export default function Cart() {
     }
   };
 
-  const decreaseAmount = async (productDetailId, quantity) => {
-    if (quantity < 1) {
+  const decreaseAmount = async (productDetailId, quantity, productId) => {
+    if (quantity > 1) {
       const jwt = localStorage.getItem("jwt");
       if (jwt && isLogin) {
         const idLogin = getIdFromJwt(jwt);
-        const cartId = await getCartByUserId(idLogin);
+        const user = await getUserByAccountId(idLogin);
+        const cartId = await getCartByUserId(user.id);
         const value = {
           cartId: cartId,
           productDetailId: productDetailId,
           quantity: -1,
-          accountId: idLogin,
+          userId: user.id,
         };
         await insertOrUpdateCartDetail(value);
         await fetchDataCartDetail();
       }
     } else {
-      toast.info("Do you want to delete this product ?");
+      toast.info(
+        <div>
+          <p style={{ color: "blue", fontSize: "14px" }}>
+            Do you want to delete this product ?
+          </p>
+          <div className="mt-1">
+            <button
+              onClick={() => handleDeleteCartDetail(productId, productDetailId)}
+              className="btn-donate"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      );
     }
   };
-  const handleShowModalDelete = (productDetail) =>{
-      setShowModalDelete(true);
-      setProductDetail(productDetail);
-  }
+  const handleShowModalDelete = (productDetail) => {
+    setShowModalDelete(true);
+    setProductDetail(productDetail);
+  };
 
-  const handleHideModalDelete = () =>{
+  const handleHideModalDelete = () => {
     setShowModalDelete(false);
-}
-
+  };
 
   if (!cartDetails) {
     return null;
@@ -112,17 +130,34 @@ export default function Cart() {
                               </Link>
                             </h5>
                           </div>
-                          <div className="d-flex flex-row align-items-center">
-                            <button
-                              style={{
-                                paddingLeft: "70px",
-                                paddingRight: "70px",
-                              }}
-                              className="btn-donate"
-                            >
-                              Pay immediately
-                            </button>
-                          </div>
+                          {cartDetails.length > 0 && (
+                            <div className="d-flex flex-row align-items-center">
+                              <Link
+                                to="/invoice"
+                                style={{
+                                  paddingLeft: "70px",
+                                  paddingRight: "70px",
+                                }}
+                                className="btn-donate"
+                              >
+                                Pay immediately
+                              </Link>
+                            </div>
+                          )}
+                          {cartDetails.length < 1 && (
+                            <div className="d-flex flex-row align-items-center">
+                              <Link
+                                to="/"
+                                style={{
+                                  paddingLeft: "70px",
+                                  paddingRight: "70px",
+                                }}
+                                className="btn-donate"
+                              >
+                                Buy now
+                              </Link>
+                            </div>
+                          )}
                         </div>
                         <hr />
                         <div className="d-flex justify-content-between align-items-center mb-4">
@@ -132,11 +167,13 @@ export default function Cart() {
                               You have {cartDetails.length} items in your cart
                             </h5>
                           </div>
-                          <div>
-                            <h4 style={{ color: "blue" }}>
-                              Total: ${totalPrice}
-                            </h4>
-                          </div>
+                          {cartDetails.length > 0 && !isPay && (
+                            <div>
+                              <h4 style={{ color: "blue" }}>
+                                Total: ${totalPrice}
+                              </h4>
+                            </div>
+                          )}
                         </div>
                         {cartDetails.map((item, index) => (
                           <div key={index} className="card mb-3">
@@ -184,8 +221,6 @@ export default function Cart() {
                                         decreaseAmount(
                                           item.productDetailId,
                                           item.quantity,
-                                          item.color_id,
-                                          item.size_id,
                                           item.product_id
                                         )
                                       }
@@ -193,7 +228,6 @@ export default function Cart() {
                                       -
                                     </button>
                                     <input
-                                      ref={inputRef}
                                       style={{
                                         width: "60px",
                                         border: "1px solid blue",
@@ -204,21 +238,6 @@ export default function Cart() {
                                       min="0"
                                       value={item.quantity}
                                       readOnly
-                                      // onChange={(event) =>
-                                      //   setQuantity(
-                                      //     parseInt(event.target.value)
-                                      //   )
-                                      // }
-                                      // onBlur={(event) =>
-                                      //   handleBlur(
-                                      //     event,
-                                      //     item.productDetailId,
-                                      //     item.color_id,
-                                      //     item.size_id,
-                                      //     item.product_id
-                                      //   )
-                                      // }
-
                                       onKeyDown={(event) => {
                                         const key = event.key;
                                         if (
@@ -255,7 +274,10 @@ export default function Cart() {
                                       ${item.quantity * item.price}
                                     </h5>
                                   </div>
-                                  <a onClick={() => handleShowModalDelete(item)} style={{ color: "#cecece" }}>
+                                  <a
+                                    onClick={() => handleShowModalDelete(item)}
+                                    style={{ color: "#cecece" }}
+                                  >
                                     <i className="fas fa-trash-alt" />
                                   </a>
                                 </div>
@@ -294,7 +316,12 @@ export default function Cart() {
           </div>
         </section>
       )}
-      <ModalConfirm productDetail ={productDetail} showModalDelete ={showModalDelete} handleHideModalDelete = {handleHideModalDelete}/>
+      <ModalConfirm
+        productDetail={productDetail}
+        showModalDelete={showModalDelete}
+        handleHideModalDelete={handleHideModalDelete}
+      />
+      
     </div>
   );
 }

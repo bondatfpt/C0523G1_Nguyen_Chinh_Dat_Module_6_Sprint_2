@@ -47,7 +47,7 @@ public class RestCartController {
         if (cartDto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed !!");
         }
-        iCartService.insertOrUpdateCartDetail(cartDto.getCartId(),cartDto.getProductDetailId(), cartDto.getQuantity(), cartDto.getAccountId());
+        iCartService.insertOrUpdateCartDetail(cartDto.getCartId(),cartDto.getProductDetailId(), cartDto.getQuantity(), cartDto.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body("Success Updated");
     }
 
@@ -56,16 +56,20 @@ public class RestCartController {
         if (cartDto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed !!");
         }
-        iCartService.updateAmountCartDetail(cartDto.getCartId(),cartDto.getProductDetailId(), cartDto.getQuantity(), cartDto.getAccountId());
+        iCartService.updateAmountCartDetail(cartDto.getCartId(),cartDto.getProductDetailId(), cartDto.getQuantity(), cartDto.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body("Success Updated");
     }
 
-    @DeleteMapping("/cart-detail/{accountId}/{cartId}/{productId}/{productDetailId}")
-    public ResponseEntity<String> delete(@PathVariable Integer accountId,@PathVariable Integer cartId,
+    @DeleteMapping("/cart-detail/{userId}/{cartId}/{productId}/{productDetailId}")
+    public ResponseEntity<String> delete(@PathVariable Integer userId,@PathVariable Integer cartId,
                                          @PathVariable Integer productId, @PathVariable Integer productDetailId) {
-        iCartService.delete(accountId, cartId, productId, productDetailId);
+        iCartService.delete(userId, cartId, productId, productDetailId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Success deleted");
     }
 
-
+    @DeleteMapping("/cart-detail/{userId}/{cartId}")
+    public ResponseEntity<String> deleteCartDetailFlowInvoice(@PathVariable Integer userId,@PathVariable Integer cartId) {
+        iCartService.deleteCartDetailFlowInvoice(userId, cartId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success deleted");
+    }
 }

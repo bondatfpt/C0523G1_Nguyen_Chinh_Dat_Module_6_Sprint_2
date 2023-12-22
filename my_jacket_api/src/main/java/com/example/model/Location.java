@@ -1,5 +1,7 @@
 package com.example.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -10,7 +12,7 @@ public class Location {
     private Integer id;
 
     private String name;
-
+    @JsonBackReference
     @OneToMany(mappedBy = "location")
     private Set<User> users;
 
