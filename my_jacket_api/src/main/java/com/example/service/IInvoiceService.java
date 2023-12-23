@@ -3,6 +3,8 @@ package com.example.service;
 import com.example.dto.ProductDetailDto;
 import com.example.model.Invoice;
 import com.example.model.InvoiceDetail;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public interface IInvoiceService {
     Invoice saveInvoice (Invoice invoice);
      Optional<Invoice> getInvoiceById(Integer id);
     List<InvoiceDetail> findInvoiceDetailByInvoice_Id(Integer invoiceId);
-    List<Invoice> getInvoicesByUserId(Integer userId);
+    Page<Invoice> getInvoicesByUserId(Pageable pageable, Integer userId );
+    Page<Invoice> getInvoicesByDate( Pageable pageable,String date);
 
 }

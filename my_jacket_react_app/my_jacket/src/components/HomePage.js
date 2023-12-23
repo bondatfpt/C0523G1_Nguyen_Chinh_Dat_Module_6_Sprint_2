@@ -184,11 +184,7 @@ export default function HomePage() {
                             <i className="fa fa-eye" />
                           </Link>
                         </li>
-                        <li>
-                          <a>
-                            <i className="fa fa-star" />
-                          </a>
-                        </li>
+                        
                       </ul>
                     </div>
                     <Link to = {`/product-detail/${item.id}`}>
@@ -207,7 +203,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section>  
       <div
         style={{
           textAlign: "center",

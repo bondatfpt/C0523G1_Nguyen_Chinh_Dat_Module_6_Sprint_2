@@ -92,8 +92,15 @@ export default function Header() {
             </div>
             <div className="col-lg-5 col-md-5">
               <div className="search">
-                <div className="btn-category">
-                  <select name="categoryId" onChange={handleChangeCategoryId}>
+                <input
+                  onChange={handleChangeNameSearch}
+                  placeholder="Enter a name product"
+                  type="text"
+                  name="name"
+                  className="input1"
+                />
+                 <div className="btn-category" style={{width:"50%"}}>
+                  <select className="input1" style={{height:"50px"}} name="categoryId" onChange={handleChangeCategoryId}>
                     <option value="">All</option>
                     {categories.map((item) => (
                       <option value={item.id} key={item.id}>
@@ -102,12 +109,6 @@ export default function Header() {
                     ))}
                   </select>
                 </div>
-                <input
-                  onChange={handleChangeNameSearch}
-                  placeholder="Enter a name product"
-                  type="text"
-                  name="name"
-                />
               </div>
             </div>
             <div className=" col-lg-5 col-md-2 ">

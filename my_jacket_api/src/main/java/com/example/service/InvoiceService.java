@@ -7,6 +7,8 @@ import com.example.model.InvoiceDetail;
 import com.example.repository.IInvoiceDetailRepository;
 import com.example.repository.IInvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,7 +54,12 @@ public class InvoiceService implements IInvoiceService {
     }
 
     @Override
-    public List<Invoice> getInvoicesByUserId(Integer userId) {
-        return iInvoiceRepository.getInvoicesByUserId(userId);
+    public Page<Invoice> getInvoicesByUserId(Pageable pageable, Integer userId) {
+        return iInvoiceRepository.getInvoicesByUserId(pageable,userId);
+    }
+
+    @Override
+    public Page<Invoice> getInvoicesByDate(Pageable pageable,String date) {
+        return iInvoiceRepository.getInvoicesByDate(pageable,date);
     }
 }

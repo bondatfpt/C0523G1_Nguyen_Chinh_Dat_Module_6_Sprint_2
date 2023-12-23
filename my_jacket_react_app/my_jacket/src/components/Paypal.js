@@ -20,6 +20,7 @@ const ButtonWrapper = ({ currency,showSpinner,amount,payload,paymentId,note,othe
     const {setIsPay,cartDetails,totalQuantity,setAmountItem} = useContext(AppContext);
     const navigate = useNavigate();
     const handleCreateInvoice = async () => {
+        console.log("Note:" + note + "Other location:" + otherAddress);
         let user;
         const jwt = localStorage.getItem("jwt");
         if (jwt) {
@@ -36,6 +37,7 @@ const ButtonWrapper = ({ currency,showSpinner,amount,payload,paymentId,note,othe
             userId: user.id,
           };
           respone = await createInvoice(invoice);
+          console.log("Invoice pay:" + invoice);
           if (respone && respone.status === 200) {
             const invoiceDetailArr = cartDetails.map((item) => ({
               quantity: item.quantity,

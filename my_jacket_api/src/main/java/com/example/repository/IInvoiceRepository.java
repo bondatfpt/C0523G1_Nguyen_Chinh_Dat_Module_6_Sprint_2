@@ -1,6 +1,8 @@
 package com.example.repository;
 
 import com.example.model.Invoice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,6 +26,10 @@ public interface IInvoiceRepository extends JpaRepository<Invoice,Integer> {
     Invoice getInvoiceByUserId(@Param("id") Integer id);
 
     @Query(value = "SELECT * FROM my_jacket.invoice\n" +
-            "where user_id = :userId",nativeQuery = true)
-    List<Invoice> getInvoicesByUserId(@Param("userId") Integer userId);
+            "where user_id = :userId order by date_order desc",nativeQuery = true)
+    Page<Invoice> getInvoicesByUserId(Pageable pageable, @Param("userId") Integer userId);
+
+    @Query(value = "SELECT * FROM my_jacket.invoice\n" +
+            "where date_order like %:date% order by date_order desc",nativeQuery = true)
+    Page<Invoice> getInvoicesByDate(Pageable pageable,@Param("date") String date);
 }
