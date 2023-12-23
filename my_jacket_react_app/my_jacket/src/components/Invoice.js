@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { updateQuantityAfterPay } from "../service/ProductService";
 import Paypal from "./Paypal";
+import ConfirmPay from "./ConfirmPay";
 
 export default function Invoice() {
   const {
@@ -37,6 +38,15 @@ export default function Invoice() {
   const [otherAddress, setOtherAddress] = useState("");
   const [openOtherAddress, setOpenOtherAddess] = useState(false);
   const checkboxRef = useRef(null);
+  const [showConfirm,setShowConfirm] = useState(false);
+
+  const handleShowConfirm = () => {
+    setShowConfirm(true);
+  }
+
+  const handleHideConfirm = () => {
+    setShowConfirm(false);
+  }
   const handleCheckboxChange = () => {
     const isChecked = checkboxRef.current.checked;
     if (isChecked) {
@@ -58,54 +68,7 @@ export default function Invoice() {
     const payments = await findAll();
     setPayments(payments);
   };
-  const handleCreateInvoice = async () => {
-    let respone;
-    if (paymentId !== undefined) {
-      const invoice = {
-        note: note,
-        otherLocation: otherAddress,
-        totalPrice: totalPrice,
-        totalQuantity: totalQuantity,
-        paymentId: paymentId,
-        userId: user.id,
-      };
-      respone = await createInvoice(invoice);
-      if (respone && respone.status === 200) {
-        const invoiceDetailArr = cartDetails.map((item) => ({
-          quantity: item.quantity,
-          totalPrice: item.price * item.quantity,
-          invoiceId: respone.data.id,
-          productDetailId: item.productDetailId,
-        }));
-        const respone1 = await createInvoiceDetail(invoiceDetailArr);
-        if (respone.status === 200 && respone1 === 201) {
-          setIsPay(true);
-          toast.success("Done");
-          navigate("/history");
-          const cartId = await getCartByUserId(user.id);
-          await deleteCartDetailFlowInvoice(user.id, cartId);
-          const invoiceDetails = await getInvoiceDetailByInvoiceId(
-            respone.data.id
-          );
-          console.log("InvoiceS:"+invoiceDetails);
-          const productDetails = invoiceDetails.map((item) => ({
-            quantity: item.quantity,
-            userId: user.id,
-            invoiceId: item.invoice_id,
-            productDetailId: item.product_detail_id,
-          }));
-          const status = await updateQuantityAfterPay(productDetails);
-          setOpenOtherAddess(false);
-          setAmountItem("");
-          setNote("");
-          setOpenOtherAddess("");
-          fetchDataCartDetail();
-        }
-      }
-    } else {
-      toast.warn("You have not selected a payment method.");
-    }
-  };
+  
 
   useEffect(() => {
     fetchDataUser();
@@ -299,7 +262,7 @@ export default function Invoice() {
                         style={{ display: "flex", justifyContent: "center" }}
                       >
                         <button
-                          onClick={handleCreateInvoice}
+                          onClick={handleShowConfirm}
                           style={{ padding: "10px", width: "50%" }}
                           className="btn-donate"
                         >
@@ -323,10 +286,19 @@ export default function Invoice() {
                           otherAddress={otherAddress}
                           payload={cartDetails}
                           setNote={setNote}
-                          setOtherAddress={setOtherAddress}
+                          setOtherAddress={setOtherAddress}                          
                         />
                       </div>
                     )}
+                    <ConfirmPay showConfirm = {showConfirm}
+                     handleHideConfirm={handleHideConfirm}
+                     setShowConfirm = {setShowConfirm}
+                     paymentId = {paymentId}
+                    note={note} 
+                    otherAddress = {otherAddress}
+                    setOpenOtherAddess={setOpenOtherAddess}
+                    setNote={setNote}
+                    setOtherAddress = {setOtherAddress}/>
                   </div>
                   <div className="mt-5">
                     <p style={{ color: "blue" }}>

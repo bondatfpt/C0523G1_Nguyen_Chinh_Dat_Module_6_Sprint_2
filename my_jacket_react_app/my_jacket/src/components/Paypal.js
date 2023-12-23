@@ -60,7 +60,7 @@ const ButtonWrapper = ({
       if (respone.status === 200 && respone1 === 201) {
         setIsPay(true);
         navigate("/history");
-        toast.success("Done");
+        toast.success("Payment success. The product will be delivered to your registered address after 3-5 days.");
         const cartId = await getCartByUserId(user.id);
         await deleteCartDetailFlowInvoice(user.id, cartId);
         const invoiceDetails = await getInvoiceDetailByInvoiceId(

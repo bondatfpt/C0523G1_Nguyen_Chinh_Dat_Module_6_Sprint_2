@@ -75,12 +75,12 @@ export default function History() {
   }
 
   return (
-    <div style={{ marginTop: "150px" }}>
+    <div style={{ marginTop: "120px" }}>
       <div>
         <h2
           style={{
             textAlign: "center",
-            marginBottom: "35px",
+            marginBottom: "20px",
             color: "blue",
           }}
         >
