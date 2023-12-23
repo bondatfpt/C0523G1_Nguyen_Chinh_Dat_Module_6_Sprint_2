@@ -165,7 +165,7 @@ export default function HomePage() {
           <div className="row">
             <div className="col-lg-12">
               <div className="section-heading">
-                <h2>Our Products</h2>
+                <h2 style={{color:"blue"}}>Our Products</h2>
                 <span>Check out all of our products.</span>
               </div>
             </div>

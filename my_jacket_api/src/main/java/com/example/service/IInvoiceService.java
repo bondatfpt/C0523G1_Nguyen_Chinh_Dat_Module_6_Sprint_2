@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.IInvoiceDetailDto;
 import com.example.dto.ProductDetailDto;
 import com.example.model.Invoice;
 import com.example.model.InvoiceDetail;
@@ -21,5 +22,6 @@ public interface IInvoiceService {
     List<InvoiceDetail> findInvoiceDetailByInvoice_Id(Integer invoiceId);
     Page<Invoice> getInvoicesByUserId(Pageable pageable, Integer userId );
     Page<Invoice> getInvoicesByDate( Pageable pageable,String date);
+    List<IInvoiceDetailDto> getInvoicesByInvoiceId(Integer invoiceId);
 
 }

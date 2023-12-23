@@ -14,5 +14,6 @@ public interface IImageService {
     List<IImageDto> getColorOfProduct( Integer id);
     List<IImageDto> getImagesOfColor ( Integer colorId,Integer productId);
 
+    Image getImageByProductId( Integer id);
 
 }

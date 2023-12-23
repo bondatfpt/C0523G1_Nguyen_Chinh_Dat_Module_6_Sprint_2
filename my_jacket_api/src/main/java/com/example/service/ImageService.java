@@ -41,4 +41,9 @@ public class ImageService implements IImageService{
     public List<IImageDto> getImagesOfColor(Integer colorId, Integer productId) {
         return iImageRepository.getImagesOfColor(colorId, productId);
     }
+
+    @Override
+    public Image getImageByProductId(Integer id) {
+        return iImageRepository.getImageByProductId(id);
+    }
 }

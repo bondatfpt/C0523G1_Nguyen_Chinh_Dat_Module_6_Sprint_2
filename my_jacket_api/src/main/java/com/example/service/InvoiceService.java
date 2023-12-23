@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.IInvoiceDetailDto;
 import com.example.dto.InvoiceDetailDto;
 import com.example.dto.ProductDetailDto;
 import com.example.model.Invoice;
@@ -61,5 +62,10 @@ public class InvoiceService implements IInvoiceService {
     @Override
     public Page<Invoice> getInvoicesByDate(Pageable pageable,String date) {
         return iInvoiceRepository.getInvoicesByDate(pageable,date);
+    }
+
+    @Override
+    public List<IInvoiceDetailDto> getInvoicesByInvoiceId(Integer invoiceId) {
+        return iInvoiceDetailRepository.getInvoicesByInvoiceId(invoiceId);
     }
 }

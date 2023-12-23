@@ -87,15 +87,19 @@ export default function Invoice() {
           const invoiceDetails = await getInvoiceDetailByInvoiceId(
             respone.data.id
           );
+          console.log("InvoiceS:"+invoiceDetails);
           const productDetails = invoiceDetails.map((item) => ({
             quantity: item.quantity,
             userId: user.id,
-            invoiceId: item.invoice.id,
-            productDetailId: item.productDetail.id,
+            invoiceId: item.invoice_id,
+            productDetailId: item.product_detail_id,
           }));
           const status = await updateQuantityAfterPay(productDetails);
           setOpenOtherAddess(false);
           setAmountItem("");
+          setNote("");
+          setOpenOtherAddess("");
+          fetchDataCartDetail();
         }
       }
     } else {
@@ -168,26 +172,10 @@ export default function Invoice() {
                       />
                     </div>
                     )}
-                    <div className="form-outline mb-3">
-                      <textarea
-                        onChange={(event) => setNote(event.target.value)}
-                        placeholder="Notes upon delivery"
-                        type="text-area"
-                        className="form-control form-control-lg no-resize"
-                      />
-                    </div>
                     <div
                       className="payment-options"
                       style={{ border: "none", padding: "0px" }}
                     >
-                      <label>
-                        <input
-                          ref={checkboxRef}
-                          onChange={handleCheckboxChange}
-                          type="checkbox"
-                        />
-                        Delivery to another address
-                      </label>
                       {openOtherAddress && (
                         <div className="form-outline mb-3">
                           <textarea
@@ -201,6 +189,22 @@ export default function Invoice() {
                           />
                         </div>
                       )}
+                      <label>
+                        <input
+                          ref={checkboxRef}
+                          onChange={handleCheckboxChange}
+                          type="checkbox"
+                        />
+                        Delivery to another address
+                      </label>
+                        <div className="form-outline mb-3">
+                      <textarea
+                        onChange={(event) => setNote(event.target.value)}
+                        placeholder="Notes upon delivery"
+                        type="text-area"
+                        className="form-control form-control-lg no-resize"
+                      />
+                    </div>
                     </div>
                     <div className="payment-container">
                       <div className="payment-options">
@@ -238,6 +242,9 @@ export default function Invoice() {
                     <div className="mb-2 mt-2">
                       <h4 style={{ textAlign: "center", color: "blue" }}>
                         Order Products ({cartDetails.length} items)
+                        <p style={{ color: "green"}}>
+                        Total Price: ${totalPrice}/Total Quantity: {totalQuantity}
+                      </p>
                       </h4>
                     </div>
                     <div
@@ -245,7 +252,8 @@ export default function Invoice() {
                       className="scrollable-div"
                     >
                       {cartDetails.map((item, index) => (
-                        <div key={index} className="card mb-3 product-order">
+                        <Link key={index} to={`/product-detail/${item.product_id}`}>
+                        <div  className="card mb-3 product-order">
                           <div className="card-body">
                             <div className="d-flex justify-content-between">
                               <div className="d-flex flex-row align-items-center">
@@ -280,16 +288,14 @@ export default function Invoice() {
                             </div>
                           </div>
                         </div>
+                        </Link>
                       ))}
                     </div>
                     <div className="mt-3 mb-3">
-                      <h5 style={{ color: "blue", float: "right" }}>
-                        Total Price: ${totalPrice}
-                      </h5>
                     </div>
                     {paymentId == 1 && (
                       <div
-                        className="col-12 mt-5 "
+                        className="col-12 mt-3 "
                         style={{ display: "flex", justifyContent: "center" }}
                       >
                         <button
@@ -303,7 +309,7 @@ export default function Invoice() {
                     )}
                     {paymentId == 2 && (
                       <div
-                        className="col-12 mt-5 "
+                        className="col-12 mt-3 "
                         style={{
                           display: "flex",
                           justifyContent: "center",
@@ -316,6 +322,8 @@ export default function Invoice() {
                           paymentId={paymentId}
                           otherAddress={otherAddress}
                           payload={cartDetails}
+                          setNote={setNote}
+                          setOtherAddress={setOtherAddress}
                         />
                       </div>
                     )}

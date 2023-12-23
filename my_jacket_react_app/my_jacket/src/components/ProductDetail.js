@@ -284,6 +284,8 @@ export default function ProductDetail() {
       {sumAmount > 0 && (
         <div className="container">
           <div className="row">
+          <h2 style={{textAlign:"center",color:"blue"}}>Product Detail</h2>
+
             <div className="col-lg-8">
               <div className="row gy-3">
                 <Swiper

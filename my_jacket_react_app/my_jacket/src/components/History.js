@@ -4,6 +4,7 @@ import { getIdFromJwt } from "../service/Jwt";
 import { getUserByAccountId } from "../service/LoginService";
 import { AppContext } from "../context/AppContext";
 import { formatDate } from "../service/InvoiceService";
+import InvoiceDetail from "./InvoiceDetail";
 
 export default function History() {
   const [invoices, setInvoices] = useState([]);
@@ -12,6 +13,30 @@ export default function History() {
   const [totalPage, setTotalPage] = useState([]);
   const [date, setDate] = useState();
   const [isSearch, setIsSearch] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const [invoiceId, setInvoiceId] = useState();
+  const [totalPrice, setTotalPrice] = useState();
+  const [totalQuantiy, setTotalQuantity] = useState();
+  const [dateOrder, setDateOrder] = useState();
+  const [productDetailId, setProductDetailId] = useState();
+  const {amountItem} = useContext(AppContext);
+
+  const handleShowModalDetail = (
+    id,
+    totalQuantity,
+    totalPrice,
+    dateOrder,
+  ) => {
+    setShowDetail(true);
+    setInvoiceId(id);
+    setTotalPrice(totalPrice);
+    setTotalQuantity(totalQuantity);
+    setDateOrder(dateOrder);
+  };
+
+  const handleHidModalDetail = () => {
+    setShowDetail(false);
+  };
 
   const totalPageArray = (totalP) => {
     const arr = [];
@@ -35,13 +60,13 @@ export default function History() {
   const handleSerach = (event) => {
     setDate(event.target.value);
     setIsSearch(!isSearch);
-  }
+  };
 
   useEffect(() => {
     fetchDataInvoices();
-    if(isSearch){
-        setPage(0);
-        setIsSearch(!isSearch);
+    if (isSearch) {
+      setPage(0);
+      setIsSearch(!isSearch);
     }
   }, [page, date]);
 
@@ -68,9 +93,9 @@ export default function History() {
         >
           <div className="container-2 row mb-2">
             <div className="search-container col-12">
-              <label style={{ color: "blue" }}>
+              <label  style={{ color: "blue",width:"100%",float:"right" }}>
                 <b>Enter date:{"  "}</b>
-                <input
+                <input  style={{width:"30%"}}
                   onChange={(event) => handleSerach(event)}
                   className="input1"
                   type="date"
@@ -119,6 +144,14 @@ export default function History() {
                       {item.payment.method == "Paypal" && <td>Paid</td>}
                       <td className="text-center">
                         <button
+                          onClick={() =>
+                            handleShowModalDetail(
+                              item.id,
+                              item.totalQuantity,
+                              item.totalPrice,
+                              item.dateOrder,
+                            )
+                          }
                           className="btn btn-sm btn-outline-primary rounded-0"
                           type="button"
                         >
@@ -130,6 +163,16 @@ export default function History() {
                 </tbody>
               </table>
             )}
+            <InvoiceDetail
+              showDetail={showDetail}
+              handleHidModalDetail={handleHidModalDetail}
+              invoiceId={invoiceId}
+              totalPrice={totalPrice}
+              totalQuantity={totalQuantiy}
+              dateOrder={dateOrder}
+              productDetailId={productDetailId}
+              amountItem = {amountItem}
+            />
             {invoices.length < 1 && isLogin && (
               <h2 style={{ textAlign: "center", color: "blue" }}>No data</h2>
             )}

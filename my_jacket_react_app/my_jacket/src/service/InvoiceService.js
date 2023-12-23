@@ -59,6 +59,15 @@ export const getInvoicesByUserId = async (page, userId, date) => {
   }
 };
 
+export const getImageByProductId = async (id) => {
+  try {
+    const respone = await axios.get("http://localhost:8080/api/image/product-detail/" + id);
+    return respone.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const formatDate =  (date) => {
   let datetime = new Date(date);
   let hours = datetime.getHours();

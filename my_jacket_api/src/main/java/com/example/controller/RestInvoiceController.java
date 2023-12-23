@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.dto.IInvoiceDetailDto;
 import com.example.dto.InvoiceDetailDto;
 import com.example.dto.InvoiceDto;
 import com.example.dto.ProductDetailDto;
@@ -51,8 +52,8 @@ public class RestInvoiceController {
     }
 
     @GetMapping("/invoice-detail/{id}")
-    public ResponseEntity<List<InvoiceDetail>> getInvoiceDetailByInvoiceId(@PathVariable Integer id) {
-        List<InvoiceDetail> invoiceDetails = iInvoiceService.findInvoiceDetailByInvoice_Id(id);
+    public ResponseEntity<List<IInvoiceDetailDto>> getInvoiceDetailByInvoiceId(@PathVariable Integer id) {
+        List<IInvoiceDetailDto> invoiceDetails = iInvoiceService.getInvoicesByInvoiceId(id);
         if (invoiceDetails == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {

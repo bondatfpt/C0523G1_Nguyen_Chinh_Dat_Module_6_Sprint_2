@@ -64,4 +64,8 @@ public interface IImageRepository extends JpaRepository<Image,Integer> {
             "join product on product.id = product_detail.product_id and product.id = :productId \n" +
             "limit 4",nativeQuery = true)
     List<IImageDto> getImagesOfColor (@Param("colorId") Integer colorId, @Param("productId") Integer productId);
+
+    @Query(value = "select * from image where product_detail_id = :id\n" +
+            "limit 1",nativeQuery = true)
+    Image getImageByProductId(@Param("id") Integer id);
 }

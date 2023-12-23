@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.dto.IImageDto;
+import com.example.model.Image;
 import com.example.model.ProductDetail;
 import com.example.service.IImageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,16 @@ public class RestImageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(iImageDtos, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/product-detail/{id}")
+    public ResponseEntity<Image> getImageByProductId(@PathVariable Integer id) {
+      Image image = iImageService.getImageByProductId(id);
+        if (image == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(image, HttpStatus.OK);
         }
     }
 }
