@@ -281,11 +281,11 @@ export default function ProductDetail() {
   }
   return (
     <section style={{ marginTop: "120px" }} className="section">
+                <h2 style={{textAlign:"center",color:"blue"}}>Product Detail</h2>
+          <hr style={{width:"100%"}}></hr>
       {sumAmount > 0 && (
         <div className="container">
           <div className="row">
-          <h2 style={{textAlign:"center",color:"blue"}}>Product Detail</h2>
-
             <div className="col-lg-8">
               <div className="row gy-3">
                 <Swiper

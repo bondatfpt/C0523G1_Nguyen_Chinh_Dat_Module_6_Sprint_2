@@ -25,7 +25,10 @@ export default function Cart() {
     handleShowModal,
     isPay,
     handleDeleteCartDetail,
+    isValid
   } = useContext(AppContext);
+
+  
 
   useEffect(() => {
     fetchDataCartDetail();
@@ -130,7 +133,7 @@ export default function Cart() {
                               </Link>
                             </h5>
                           </div>
-                          {cartDetails.length > 0 && (
+                          {cartDetails.length > 0  && (
                             <div className="d-flex flex-row align-items-center">
                               <Link
                                 to="/invoice"

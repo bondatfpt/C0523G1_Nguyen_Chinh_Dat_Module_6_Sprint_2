@@ -86,7 +86,7 @@ export default function History() {
         >
           History Order
         </h2>
-
+          <hr></hr>
         <div
           className="body container shadow pb-1"
           style={{ textAlign: "center" }}

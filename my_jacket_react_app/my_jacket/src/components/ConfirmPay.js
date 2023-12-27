@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { AppContext } from "../context/AppContext";
 import { getIdFromJwt } from "../service/Jwt";
 import { getUserByAccountId } from "../service/LoginService";
-import { Link } from "react-router-dom";
 import {
   createInvoice,
   createInvoiceDetail,
@@ -24,7 +23,7 @@ const ConfirmPay = ({
   paymentId,
   note,
   otherAddress,
-  setNote,setOpenOtherAddess,setOtherAddress
+  setNote,setOpenOtherAddess
 }) => {
   const [secondsLeft, setSecondsLeft] = useState(15);
   const navigate = useNavigate();
@@ -96,14 +95,18 @@ const ConfirmPay = ({
   };
   useEffect(() => {
     fetchDataUser();
+    if(showConfirm){
     const timer = setInterval(() => {
       setSecondsLeft((prevSeconds) => prevSeconds - 1);
     }, 1000);
-
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }else{
+    setSecondsLeft(15);
+  }
+ 
+  }, [showConfirm]);
 
   useEffect(() => {
     if (secondsLeft === 0) {
@@ -119,18 +122,19 @@ const ConfirmPay = ({
           textAlign: "center",
           justifyContent: "center",
           display: "flex",
+          alignItems:"center"
         }}
       >
         <Modal.Title style={{ color: "blue" }}>Order confirmation</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <b style={{ color: "green" }}>
+        <b style={{ color: "green",textAlign:"center" }}>
           Are you sure you want to order these products? After clicking agree,
           these products will be shipped to the address you registered. Please
           pay attention to your phone.
         </b>{" "}
         <br />
-        <b style={{color:"red"}}> Modal will close in {secondsLeft} seconds.</b>
+        <b style={{color:"red",textAlign:"center",justifyContent:"center"}}> Modal will close in {secondsLeft} seconds.</b>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleHideConfirm}>

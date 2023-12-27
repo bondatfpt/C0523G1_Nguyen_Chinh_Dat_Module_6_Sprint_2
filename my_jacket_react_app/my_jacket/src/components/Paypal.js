@@ -108,7 +108,7 @@ const ButtonWrapper = ({
           });
         }}
         onError={(err) => {
-          toast.error("Thanh toán bằng paypal thất bại" + err);
+          toast.error("Payment by paypal failed");
         }}
       />
     </>

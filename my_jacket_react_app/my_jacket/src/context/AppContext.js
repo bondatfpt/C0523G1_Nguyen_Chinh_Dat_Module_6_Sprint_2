@@ -5,6 +5,7 @@ import { getCartByUserId } from "../service/CartService";
 import { getCartDetail, deleteCartDetail } from "../service/CartService";
 import { toast } from "react-toastify";
 import { getUserByAccountId } from "../service/LoginService";
+import { getAmountOfSizeOfColorOfProduct } from "../service/ProductService";
 
 export const AppContext = createContext({});
 export const AppProvider = ({ children }) => {
@@ -21,8 +22,9 @@ export const AppProvider = ({ children }) => {
   const [productDetailId, setProductDetailId] = useState();
   const [showModal, setShowModal] = useState(false);
   const [totalQuantity, setTotalQuantity] = useState(0);
-  const [isPay,setIsPay] = useState(false);
-  const [amountItem,setAmountItem] = useState();
+  const [isPay, setIsPay] = useState(false);
+  const [amountItem, setAmountItem] = useState();
+  const [isValid, setIsValid] = useState(true);
 
   const isProductInCart = (productDetailId) => {
     return cartDetails.some((item) => item.productDetailId === productDetailId);
@@ -32,7 +34,7 @@ export const AppProvider = ({ children }) => {
     const jwt = localStorage.getItem("jwt");
     if (jwt && isLogin) {
       const idLogin = getIdFromJwt(jwt);
-      const user = await getUserByAccountId(idLogin)
+      const user = await getUserByAccountId(idLogin);
       const cartId = await getCartByUserId(user.id);
       const response = await deleteCartDetail(
         user.id,
@@ -55,27 +57,42 @@ export const AppProvider = ({ children }) => {
     setShowModal(false);
   };
 
+  const checkProductQuantities = async (cartDetails) => {
+    if (cartDetails.length > 0){
+    for (const item of cartDetails) {
+      const respone = await getAmountOfSizeOfColorOfProduct(
+        item.product_id,
+        item.color_id,
+        item.size_id
+      );
+      if (item.quantity > respone.quantity) {
+          return false;
+      }
+    }}
+    return true;
+  };
+
   const fetchDataCartDetail = async () => {
     const jwt = localStorage.getItem("jwt");
     if (isLogin && jwt) {
       const accountId = getIdFromJwt(jwt);
-      const user = await getUserByAccountId(accountId)
+      const user = await getUserByAccountId(accountId);
       const cartId = await getCartByUserId(user.id);
       const cartDetails = await getCartDetail(user.id, cartId);
-      setCartDetails(cartDetails);
-      setAmountItem(cartDetails.length);
-      if (cartDetails.length > 0) {
-        const sumPrice = cartDetails.reduce(
-          (total, item) => total + item.quantity * item.price,
-          0
-        );
-        setTotalPrice(sumPrice);
-        const totalQuantity = cartDetails.reduce(
-          (total, item) => total + item.quantity,
-          0
-        );
-        setTotalQuantity(totalQuantity);
-      }
+        setCartDetails(cartDetails);
+        setAmountItem(cartDetails.length);
+        if (cartDetails.length > 0) {
+          const sumPrice = cartDetails.reduce(
+            (total, item) => total + item.quantity * item.price,
+            0
+          );
+          setTotalPrice(sumPrice);
+          const totalQuantity = cartDetails.reduce(
+            (total, item) => total + item.quantity,
+            0
+          );
+          setTotalQuantity(totalQuantity);
+        }
     }
   };
 
@@ -85,7 +102,7 @@ export const AppProvider = ({ children }) => {
       setIsLogin(true);
     }
     fetchDataCartDetail();
-  }, [isLogin]);
+  }, [isLogin,isPay]);
 
   return (
     <AppContext.Provider
@@ -118,7 +135,11 @@ export const AppProvider = ({ children }) => {
         handleHideModal,
         handleShowModal,
         handleDeleteCartDetail,
-        totalQuantity,isPay,setIsPay,amountItem,setAmountItem
+        totalQuantity,
+        isPay,
+        setIsPay,
+        amountItem,
+        setAmountItem,
       }}
     >
       {children}
