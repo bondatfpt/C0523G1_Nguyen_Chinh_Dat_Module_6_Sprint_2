@@ -28,7 +28,7 @@ public class RestProductController {
     public ResponseEntity<Page<IProductDto>> findAll(@RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
                                                      @RequestParam(name = "name", required = false) String name,
                                                      @RequestParam(name = "categoryId", required = false) Integer categoryId) {
-        Pageable pageable = PageRequest.of(page, 6);
+        Pageable pageable = PageRequest.of(page, 8);
         if (categoryId == null && name != null) {
             Page<IProductDto> productDtos = iProductService.findProductByName(pageable, name);
             return new ResponseEntity<>(productDtos, HttpStatus.OK);

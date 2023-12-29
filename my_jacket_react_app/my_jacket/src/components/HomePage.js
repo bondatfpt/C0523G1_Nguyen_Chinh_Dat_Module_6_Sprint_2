@@ -174,7 +174,7 @@ export default function HomePage() {
         <div className="container">
           <div className="row">
             {products.map((item) => (
-              <div key={item.id} className="col-lg-4">
+              <div key={item.id} className="col-lg-3">
                 <div className="item">
                   <div className="thumb">
                     <div className="hover-content">
@@ -190,7 +190,7 @@ export default function HomePage() {
                     <Link to = {`/product-detail/${item.id}`}>
                     <img
                       src={item.path}
-                      style={{ width: "100%", height: "450px" }}
+                      style={{ borderRadius:"20px"}}
                     />
                     </Link>
                   </div>
